@@ -7,29 +7,19 @@ import {
   CheckCircle,
   XCircle
 } from "lucide-react";
-import SelectField from "../../../FormComponents/SelectField";
-import NumberField from "../../../FormComponents/NumberField";
-import TextAreaField from "../../../FormComponents/TextAreaField";
-import CheckboxField from "../../../FormComponents/CheckboxField";
+import SelectField from "../../../../FormComponents/SelectField";
+import NumberField from "../../../../FormComponents/NumberField";
+import TextAreaField from "../../../../FormComponents/TextAreaField";
+import CheckboxField from "../../../../FormComponents/CheckboxField";
 import {
   selectFormData,
   updateField,
   updateFormBulk
-} from "../../../../redux/PropertySlices/leaseSlice";
+} from "../../../../../redux/PropertySlices/LeaseSlice";
 
 
-const DynamicDefaultClauseSection = () => {
+const DynamicDefaultClauseSection = ({ formType, formData, handleChange }) => {
   const dispatch = useDispatch();
-  const formType = "deed";
-  
- 
-  const formData = useSelector((state) => selectFormData(formType)(state));
-  
- 
-  const handleChange = (field) => (e) => {
-    const value = e.target?.value !== undefined ? e.target.value : e;
-    dispatch(updateField({ formType, field, value }));
-  };
   
   const showLateFeeFields = formData.defaultPenaltyType === "late_fee_penalty" || 
                             formData.defaultPenaltyType === "multiple_penalties";
@@ -46,11 +36,9 @@ const DynamicDefaultClauseSection = () => {
     const clause43 = generateClause43Preview();
     const clause44 = formData.enableRemedyPeriod ? generateClause44Preview() : '';
     
-    dispatch(updateFormBulk({ 
-      formType, 
-      data: { clause43, clause44 }
-    }));
-  }, [
+     handleChange('clause43')(clause43);
+  handleChange('clause44')(clause44);
+}, [
     formData.defaultConsecutiveMonths,
     formData.defaultPenaltyType,
     formData.lateFeeAmount,

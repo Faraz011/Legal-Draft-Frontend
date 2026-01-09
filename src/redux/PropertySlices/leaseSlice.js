@@ -46,7 +46,8 @@ const leasesSlice = createSlice({
       
       state.forms[formType] = {
         ...initialFormState,
-        formData: initialData
+        // Clone to ensure Immer can draft-mutate without hitting a frozen object
+        formData: { ...initialData }
       };
       state.activeForm = formType;
     },
@@ -83,7 +84,8 @@ const leasesSlice = createSlice({
         const { formType, initialData = {} } = action.payload;
         state.forms[formType] = {
           ...initialFormState,
-          formData: initialData
+          // Clone to avoid frozen references being set into state
+          formData: { ...initialData }
         };
       }
       state.status = "idle";
@@ -116,7 +118,13 @@ const leasesSlice = createSlice({
       .addCase(submitLease.fulfilled, (state, action) => {
         state.status = "succeeded";
         if (action.payload?.formType) {
-          state.forms[action.payload.formType] = action.payload.formData;
+          const fType = action.payload.formType;
+          if (!state.forms[fType]) {
+            state.forms[fType] = { ...initialFormState, formData: {} };
+          }
+          // Update only formData to avoid replacing slice structure with a frozen object
+          state.forms[fType].formData = { ...action.payload.formData };
+          state.forms[fType].isDirty = false;
         }
       })
       .addCase(submitLease.rejected, (state, action) => {

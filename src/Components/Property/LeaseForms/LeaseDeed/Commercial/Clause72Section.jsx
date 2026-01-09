@@ -8,15 +8,15 @@ import {
   XCircle,
   DollarSign
 } from "lucide-react";
-import NumberField from "../../../FormComponents/NumberField";
-import TextAreaField from "../../../FormComponents/TextAreaField";
-import CheckboxField from "../../../FormComponents/CheckboxField";
-import SelectField from "../../../FormComponents/SelectField";
+import NumberField from "../../../../FormComponents/NumberField";
+import TextAreaField from "../../../../FormComponents/TextAreaField";
+import CheckboxField from "../../../../FormComponents/CheckboxField";
+import SelectField from "../../../../FormComponents/SelectField";
 import {
   selectFormData,
   updateField,
   updateFormBulk
-} from "../../../../redux/PropertySlices/leaseSlice";
+} from "../../../../../redux/PropertySlices/LeaseSlice";
 
 
 const DynamicSecurityDepositSection = () => {

@@ -6,8 +6,9 @@ import RentalLease from "./LeaseForms/RentalLease";
 import FlatLease from "./LeaseForms/FlatLease";
 import CommercialLeaseForm from "./LeaseForms/CommercialLeaseForm";
 import LandLease from "./LeaseForms/LandLease";
-import IndustrialLease from "./LeaseForms/IndustrialLease";
-import LeasedeedCommercialForm from "./LeaseForms/LeaseDeed/LeasedeedForm";
+import IndustrialLease from "./LeaseForms/LeaseDeed/Industrial/IndLeasedeedForm";
+import LeasedeedCommercialForm from "./LeaseForms/LeaseDeed/Commercial/LeasedeedForm";
+import LeasedeedIndustrialForm from "./LeaseForms/LeaseDeed/Industrial/IndLeasedeedForm";
 
 export const leases = [
   {
@@ -49,12 +50,12 @@ export const leases = [
     icon: MapPin,
   },
   {
-    title: "Industrial Lease",
+    title: "Industrial Lease Deed",
     desc: "Designed for manufacturing units, warehouses, and industrial spaces with specific operational requirements.",
     gradient: "from-orange-500 to-red-500",
     type: "industrial",
     img: require("../../Images/Property/IndustrialAgreement.png"),
-    component: IndustrialLease,
+    component: LeasedeedIndustrialForm,
     icon: Factory,
   },
   {
@@ -66,7 +67,8 @@ export const leases = [
     component: LeasedeedCommercialForm,
     icon: FileText,
     popular: true,
-    }
+    },
+   
 ];
 
 const Property = () => {

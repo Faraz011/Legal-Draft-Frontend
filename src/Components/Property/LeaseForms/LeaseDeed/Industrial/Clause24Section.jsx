@@ -2,29 +2,20 @@ import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { Copy,Info,CheckCircle,AlertTriangle,FileCheck,Zap} from "lucide-react";
-import NumberField from "../../../FormComponents/NumberField";
-import TextAreaField from "../../../FormComponents/TextAreaField";
-import CheckboxField from "../../../FormComponents/CheckboxField";
-import SelectField from "../../../FormComponents/SelectField";
+import NumberField from "../../../../FormComponents/NumberField";
+import TextAreaField from "../../../../FormComponents/TextAreaField";
+import CheckboxField from "../../../../FormComponents/CheckboxField";
+import SelectField from "../../../../FormComponents/SelectField";
 import {
   selectFormData,
   updateField,
   updateFormBulk
-} from "../../../../redux/PropertySlices/leaseSlice";
+} from "../../../../../redux/PropertySlices/LeaseSlice";
 
-/**
- * Dynamic Counterparts Clause Component
- * Handles clause 30 with customization options
- */
-const DynamicCounterpartsSection = () => {
+
+const DynamicCounterpartsSection = ({ formType, formData, handleChange }) => {
   const dispatch = useDispatch();
-  const formType = "deed";
-  const formData = useSelector((state) => selectFormData(formType)(state));
   
-  const handleChange = (field) => (e) => {
-    const value = e.target?.value !== undefined ? e.target.value : e;
-    dispatch(updateField({ formType, field, value }));
-  };
 
   // Helper to show/hide conditional fields
   const showNumberOfCopies = formData.counterpartsClauseType === "specific_number";
@@ -36,15 +27,11 @@ const DynamicCounterpartsSection = () => {
 
   // Update form data with generated clauses whenever they change
   useEffect(() => {
-    const clause30 = generateClause30Preview();
+    const clause24 = generateClause24Preview();
     
-    dispatch(updateFormBulk({ 
-      formType,
-      data: {
-        counterpartsClause30: clause30,
-        clause30: clause30
-      }
-    }));
+    // Use handleChange to update the fields
+    handleChange('counterpartClause24')(clause24);
+    handleChange('clause24')(clause24);
   }, [
     formData.counterpartsClauseType,
     formData.numberOfCounterparts,
@@ -59,8 +46,8 @@ const DynamicCounterpartsSection = () => {
     formData.executionTimingRequirement
   ]);
 
-  // Generate preview of clause 30
-  const generateClause30Preview = () => {
+  // Generate preview of clause 24
+  const generateClause24Preview = () => {
     let baseText = "";
     
     switch (formData.counterpartsClauseType) {
@@ -187,7 +174,7 @@ const DynamicCounterpartsSection = () => {
         </div>
         <div>
           <h2 className="text-2xl font-bold text-white">Counterparts Configuration</h2>
-          <p className="text-sm text-slate-400 mt-1">Customize execution and delivery of lease copies (Clause 30)</p>
+          <p className="text-sm text-slate-400 mt-1">Customize execution and delivery of lease copies (Clause 24)</p>
         </div>
       </div>
 
@@ -535,7 +522,7 @@ const DynamicCounterpartsSection = () => {
         <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
           <p className="text-xs text-slate-400 mb-2 font-mono">CLAUSE 30 - COUNTERPARTS</p>
           <p className="text-sm text-slate-200 leading-relaxed whitespace-pre-wrap">
-            {generateClause30Preview()}
+            {generateClause24Preview()}
           </p>
         </div>
       </div>

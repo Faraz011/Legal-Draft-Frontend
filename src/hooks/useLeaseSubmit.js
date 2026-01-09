@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { submitLease } from "../redux/PropertySlices/leaseSlice";
+import { submitLease } from "../redux/PropertySlices/LeaseSlice";
 
 export const useLeaseSubmit = (formType) => {
   const dispatch = useDispatch();

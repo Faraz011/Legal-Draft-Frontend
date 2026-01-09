@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import "../CSS/LeasePreview.css";
 import LeaseLoader from "../FormComponents/LoaderComponent";
 import DownloadButton from "../FormComponents/DownloadButton";
-import { useLeaseSubmit } from "../../hooks/useLeaseSubmit";
+import { useLeaseSubmit } from "../../hooks/UseLeaseSubmit";
 
 const LeasePreview = ({ formType, onEdit }) => {
   const [format, setFormat] = useState("pdf");
