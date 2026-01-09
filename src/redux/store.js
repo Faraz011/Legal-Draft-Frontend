@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import leasesReducer from "../redux/PropertySlices/leaseSlice";
+import leasesReducer from "./PropertySlices/LeaseSlice";  
 
 export const store = configureStore({
   reducer: {

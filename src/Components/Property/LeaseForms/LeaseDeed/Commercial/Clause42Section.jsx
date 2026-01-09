@@ -1,19 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useDispatch, useSelector } from "react-redux";
 import { 
   AlertCircle, 
   Info,
   CheckCircle,
   XCircle
 } from "lucide-react";
-import SelectField from "../../../FormComponents/SelectField";
-import NumberField from "../../../FormComponents/NumberField";
-import TextAreaField from "../../../FormComponents/TextAreaField";
-import CheckboxField from "../../../FormComponents/CheckboxField";
+import SelectField from "../../../../FormComponents/SelectField";
+import NumberField from "../../../../FormComponents/NumberField";
+import TextAreaField from "../../../../FormComponents/TextAreaField";
+import CheckboxField from "../../../../FormComponents/CheckboxField";
+import {
+  selectFormData,
+  updateField,
+  updateFormBulk
+} from "../../../../../redux/PropertySlices/LeaseSlice";
 
 
-const DynamicDefaultClauseSection = ({ formData, setFormData, handleChange }) => {
-  // Helper function to show/hide conditional fields
+const DynamicDefaultClauseSection = ({ formType, formData, handleChange }) => {
+  const dispatch = useDispatch();
+  
   const showLateFeeFields = formData.defaultPenaltyType === "late_fee_penalty" || 
                             formData.defaultPenaltyType === "multiple_penalties";
   
@@ -29,12 +36,9 @@ const DynamicDefaultClauseSection = ({ formData, setFormData, handleChange }) =>
     const clause43 = generateClause43Preview();
     const clause44 = formData.enableRemedyPeriod ? generateClause44Preview() : '';
     
-    setFormData(prev => ({
-      ...prev,
-      clause43,
-      clause44
-    }));
-  }, [
+     handleChange('clause43')(clause43);
+  handleChange('clause44')(clause44);
+}, [
     formData.defaultConsecutiveMonths,
     formData.defaultPenaltyType,
     formData.lateFeeAmount,
@@ -45,7 +49,9 @@ const DynamicDefaultClauseSection = ({ formData, setFormData, handleChange }) =>
     formData.enableRemedyPeriod,
     formData.noticePeriodDays,
     formData.remedyPeriodAction,
-    formData.customRemedyClause
+    formData.customRemedyClause,
+    dispatch,
+    formType
   ]);
 
 

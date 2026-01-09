@@ -7,7 +7,7 @@ import SectionWrapper from "../../FormComponents/SectionWrapper";
 import LeasePreview from "../../FormComponents/LeasePreview";
 import "../../CSS/LandLease.css";
 import { useDispatch } from "react-redux";
-import { updateFormBulk } from "../../../redux/PropertySlices/leaseSlice";
+import { updateFormBulk } from "../../../redux/PropertySlices/LeaseSlice";
 
 const LandLease = ({ formType }) => {
   const [formData, setFormData] = useState({

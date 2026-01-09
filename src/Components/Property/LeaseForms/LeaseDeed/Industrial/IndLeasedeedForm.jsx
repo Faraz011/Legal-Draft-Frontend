@@ -1,107 +1,121 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { FileText,Building2,Users,Calendar,DollarSign,MapPin,ClipboardList,Eye,Shield,Lock,Wrench,Scale,AlertCircle,Copy} from "lucide-react";
-import TextInputField from "../../../FormComponents/TextInputField";
-import NumberField from "../../../FormComponents/NumberField";
-import DateField from "../../../FormComponents/DateField";
-import TextAreaField from "../../../FormComponents/TextAreaField";
-import SelectField from "../../../FormComponents/SelectField";
-import LeasePreview from "../../../FormComponents/LeasePreview";
-import { useDispatch } from "react-redux";
-import { updateFormBulk } from "../../../../redux/PropertySlices/leaseSlice";
-import DynamicDefaultClauseSection from "./Clause42Section";
-import DynamicTerminationSection from "./Clause21Section";
-import DynamicSecurityDepositSection from "./Clause72Section";
-import DynamicAssignmentByLessorSection from "./Clause23Section";
-import DynamicRightToMortgageSection from "./Clause26Section";
-import DynamicCounterpartsSection from "./Clause30Section";
+import {
+  FileText,
+  Building2,
+  Users,
+  Calendar,
+  DollarSign,
+  MapPin,
+  ClipboardList,
+  Eye,
+  Shield,
+  Lock,
+  Wrench,
+  Scale,
+  AlertCircle,
+  Copy,
+  Factory,
+  Zap,
+  CheckCircle2,
+  Home,
+} from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import TextInputField from "../../../../FormComponents/TextInputField";
+import NumberField from "../../../../FormComponents/NumberField";
+import DateField from "../../../../FormComponents/DateField";
+import TextAreaField from "../../../../FormComponents/TextAreaField";
+import SelectField from "../../../../FormComponents/SelectField";
+import LeasePreview from "../../../../FormComponents/LeasePreview";
+import DynamicDefaultClauseSection from "../Commercial/Clause42Section";
+import DynamicRightToMortgageSection from "./Clause19Section";
+import DynamicCounterpartsSection from "./Clause24Section";
+import {
+  selectFormData,
+  selectFormState,
+  updateField,
+  updateFormBulk,
+  initializeForm,
+  submitLease,
+} from "../../../../../redux/PropertySlices/LeaseSlice";
 
 
-const CommercialLeaseForm = ({ formType }) => {
-  const [formData, setFormData] = useState({
-    // Agreement Details
+const IndustrialLeaseDeedForm = () => {
+  const dispatch = useDispatch();
+  const formType = "industrial_deed";
+
+  // Default form data - 37 fields total
+  const defaultFormData = {
+    // Agreement Details (2 fields)
     agreementPlace: "",
     agreementDate: "",
 
-    // Lessor Details
+    // Lessor Details (5 fields)
     lessorName: "",
     lessorFatherName: "",
     lessorResidentAddress: "",
     lessorAadharNo: "",
     lessorPanCardNo: "",
 
-    // Lessee Details
+    // Lessee Details (5 fields)
     lesseeName: "",
     lesseeFatherName: "",
     lesseeResidentAddress: "",
     lesseeAadharNo: "",
     lesseePanCardNo: "",
 
-    // Property Details
-    propertyMunicipalNo: "",
+    // Property & Purpose (2 fields)
     propertySituatedAt: "",
-    
-    // Purpose
-    leasePurpose: "",
+    propertyMunicipalNo: "",
 
-    // Lease Rent Details
+    // Industrial Operations (2 fields)
+    industrialPurpose: "",
+    machineryEquipmentDescription: "",
+
+    // Rent & Payment (6 fields)
     rentAmount: "",
-    rentPaymentDay: "",
-    latePaymentInterestRate: "",
+    rentPaymentMode: "bank_transfer",
+    latePaymentInterestRate: "2.5",
+    defaultRemedyDays: "",
     annualRentIncreasePercent: "5",
-    rentIncreaseNoticeDays: "",
+    rentIncreaseNoticeDays: "90",
 
-    // NEW: Dynamic Default & Remedy Configuration (Clauses 4.3 & 4.4)
+    // Dynamic Clauses (4 fields - CORRECTED: removed clause72, clause73)
     clause43: "",
     clause44: "",
+    mortgageClause19: "",
+    counterpartClause24: "",
 
-    // Lease Term
+    // Lease Term (2 fields)
     leaseStartDate: "",
     leaseEndDate: "",
-    renewalNoticeMonths: "",
 
-    // Security Deposit
+    // Security Deposit (1 field - STATIC, NOT DYNAMIC)
     securityDepositAmount: "",
-    securityDepositClause72: "",
-    securityDepositClause73: "",
 
-    // Lock-in Period
-    lockInPeriodStartDate: "",
+    // Lock-in Period (2 fields)
     lockInDurationYears: "1",
+    lockInStartDate: "",
 
-    // Utilities & Maintenance
-    maintenanceFeesAmount: "",
-    maintenanceFrequency: "monthly",
+    // Infrastructure (4 fields)
+    powerSupplyCapacity: "",
+    waterConsumptionLimit: "",
+    wasteManagementResponsibility: "",
+    inspectionNoticeHours: "48",
 
-    // Repairs
-    majorRepairReimbursementDays: "",
+    // Compliance & Safety (4 fields)
+    fireAffiliateCompliance: "",
+    laborLawsCompliance: "",
+    environmentalCompliance: "",
+    pollutionControlApproval: "",
 
-    // Inspection
-    inspectionNoticeHours: "",
-
-    // Fixtures Provided
-    fixturesAndFittingsList: "",
-
-    // Default & Termination
-    defaultRemedyDays: "",
-    terminationClause201: "",
-    terminationClause202: "",
-
-    // Governing Law & Jurisdiction
+    // Legal Terms (4 fields)
     governingLawState: "",
-    assignmentClause23: "",
     courtJurisdiction: "",
-
-    mortgageClause26: "",
-    
-    // Notices
     noticeLanguage: "English",
+    noticeDeliveryMode: "courier",
 
-    // Clause 30
-    counterpartClause30: "",
-    
-
-    // Schedule I - Property Description
+    // Schedule I - Property (11 fields)
     buildingNo: "",
     propertyAreaSqMtrs: "",
     registrationDistrict: "",
@@ -114,32 +128,34 @@ const CommercialLeaseForm = ({ formType }) => {
     boundaryWest: "",
     boundaryNorth: "",
 
-    // Schedule II
-    furnitureFixturesDescription: "",
-
-    // Witnesses
+    // Witnesses (4 fields)
     witness1Name: "",
     witness1Address: "",
     witness2Name: "",
     witness2Address: "",
-  });
-
-
-  const handleChange = (field) => (e) => {
-    setFormData({ ...formData, [field]: e.target.value });
   };
 
+  // Initialize form on mount
+  useEffect(() => {
+    dispatch(initializeForm({ formType, initialData: defaultFormData }));
+  }, [dispatch]);
+
+  // Get form data and state from Redux
+  const formData = useSelector((state) => selectFormData(formType)(state));
+  const { status } = useSelector((state) => selectFormState(formType)(state));
+
+  // Handle field changes with Redux
+  const handleChange = (field) => (e) => {
+    const value = e.target?.value !== undefined ? e.target.value : e;
+    dispatch(updateField({ formType, field, value }));
+  };
 
   const [previewMode, setPreviewMode] = useState(false);
-  const dispatch = useDispatch();
-
 
   const handlePreview = (e) => {
     e.preventDefault();
-    dispatch(updateFormBulk({ formType: formType, data: formData }));
-    setTimeout(() => setPreviewMode(true), 0);
+    setPreviewMode(true);
   };
-
 
   if (previewMode) {
     return (
@@ -147,22 +163,68 @@ const CommercialLeaseForm = ({ formType }) => {
     );
   }
 
-
   const sections = [
-    { icon: FileText, title: "Agreement Details", gradient: "from-blue-500 to-cyan-500" },
-    { icon: Users, title: "Party Information", gradient: "from-purple-500 to-indigo-500" },
-    { icon: Building2, title: "Property Details", gradient: "from-green-500 to-emerald-500" },
-    { icon: ClipboardList, title: "Purpose & Usage", gradient: "from-amber-500 to-orange-500" },
-    { icon: DollarSign, title: "Rent & Payments", gradient: "from-pink-500 to-rose-500" },
-    { icon: Calendar, title: "Lease Term", gradient: "from-orange-500 to-red-500" },
-    { icon: Shield, title: "Security Deposit", gradient: "from-teal-500 to-cyan-500" },
-    { icon: Lock, title: "Lock-in Period", gradient: "from-violet-500 to-purple-500" },
-    { icon: Wrench, title: "Maintenance & Repairs", gradient: "from-yellow-500 to-amber-500" },
-    { icon: AlertCircle, title: "Default & Termination", gradient: "from-red-500 to-pink-500" },
-    { icon: Scale, title: "Legal Terms", gradient: "from-indigo-500 to-blue-500" },
-    { icon: MapPin, title: "Schedules", gradient: "from-cyan-500 to-blue-500" }
+    {
+      icon: FileText,
+      title: "Agreement Details",
+      gradient: "from-blue-500 to-cyan-500",
+    },
+    {
+      icon: Users,
+      title: "Party Information",
+      gradient: "from-purple-500 to-indigo-500",
+    },
+    {
+      icon: Building2,
+      title: "Property Details",
+      gradient: "from-green-500 to-emerald-500",
+    },
+    {
+      icon: Factory,
+      title: "Industrial Operations",
+      gradient: "from-amber-500 to-orange-500",
+    },
+    {
+      icon: DollarSign,
+      title: "Rent & Payments",
+      gradient: "from-pink-500 to-rose-500",
+    },
+    {
+      icon: Calendar,
+      title: "Lease Term",
+      gradient: "from-orange-500 to-red-500",
+    },
+    {
+      icon: Shield,
+      title: "Security Deposit",
+      gradient: "from-teal-500 to-cyan-500",
+    },
+    {
+      icon: Lock,
+      title: "Lock-in Period",
+      gradient: "from-violet-500 to-purple-500",
+    },
+    {
+      icon: Zap,
+      title: "Infrastructure",
+      gradient: "from-yellow-500 to-amber-500",
+    },
+    {
+      icon: AlertCircle,
+      title: "Compliance & Safety",
+      gradient: "from-red-500 to-pink-500",
+    },
+    {
+      icon: Scale,
+      title: "Legal Terms",
+      gradient: "from-indigo-500 to-blue-500",
+    },
+    {
+      icon: MapPin,
+      title: "Schedules",
+      gradient: "from-cyan-500 to-blue-500",
+    },
   ];
-
 
   return (
     <div className="min-h-screen w-full bg-black py-12 px-4 pt-32 sm:px-6 lg:px-8">
@@ -174,15 +236,15 @@ const CommercialLeaseForm = ({ formType }) => {
           className="text-center mb-12"
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 border border-slate-800 rounded-full mb-6">
-            <Building2 className="w-4 h-4 text-green-400" />
-            <span className="text-slate-400 text-sm">Commercial Property Lease</span>
+            <Factory className="w-4 h-4 text-orange-400" />
+            <span className="text-slate-400 text-sm">Industrial Property Lease</span>
           </div>
 
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Commercial Lease Deed
+            Industrial Lease Deed
           </h1>
           <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-            Complete all sections to generate a legally compliant commercial lease agreement
+            Complete all sections to generate a legally compliant industrial lease agreement
           </p>
 
           {/* Progress Indicator */}
@@ -373,22 +435,21 @@ const CommercialLeaseForm = ({ formType }) => {
               <div className="p-3 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 bg-opacity-10">
                 <Building2 className="w-6 h-6 text-green-400" />
               </div>
-              <h2 className="text-2xl font-bold text-white">Leased Premises Details</h2>
+              <h2 className="text-2xl font-bold text-white">Property Details</h2>
             </div>
 
             <div className="space-y-4">
               <TextInputField
                 label="Property Municipal No."
                 name="propertyMunicipalNo"
-                placeholder="Municipal number"
+                placeholder="Municipal number or property ID"
                 value={formData.propertyMunicipalNo}
                 onChange={handleChange("propertyMunicipalNo")}
-                required
               />
               <TextAreaField
-                label="Property Situated At"
+                label="Property Situated At (Complete Address)"
                 name="propertySituatedAt"
-                placeholder="Complete address where property is located"
+                placeholder="Full address including street, area, city, state"
                 value={formData.propertySituatedAt}
                 onChange={handleChange("propertySituatedAt")}
                 required
@@ -397,25 +458,35 @@ const CommercialLeaseForm = ({ formType }) => {
             </div>
           </div>
 
-          {/* 4. Purpose & Usage */}
+          {/* 4. Industrial Operations */}
           <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 hover:border-slate-700 transition-all">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-3 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 bg-opacity-10">
-                <ClipboardList className="w-6 h-6 text-amber-400" />
+                <Factory className="w-6 h-6 text-amber-400" />
               </div>
-              <h2 className="text-2xl font-bold text-white">Purpose & Permitted Usage</h2>
+              <h2 className="text-2xl font-bold text-white">Industrial Operations</h2>
             </div>
 
-            <TextAreaField
-              label="Purpose of Lease"
-              name="leasePurpose"
-              placeholder="e.g., Office use, Retail store, Restaurant, Warehouse, etc."
-              value={formData.leasePurpose}
-              onChange={handleChange("leasePurpose")}
-              required
-              minLength={10}
-              helperText="Specify the commercial purpose for which the premises will be used"
-            />
+            <div className="space-y-4">
+              <TextAreaField
+                label="Purpose of Industrial Operations"
+                name="industrialPurpose"
+                placeholder="e.g., Manufacturing of textiles, Food processing, Metal fabrication"
+                value={formData.industrialPurpose}
+                onChange={handleChange("industrialPurpose")}
+                required
+                minLength={10}
+              />
+              <TextAreaField
+                label="Machinery & Equipment Description"
+                name="machineryEquipmentDescription"
+                placeholder="List all machinery (e.g., Power looms x 10, Generators x 2)"
+                value={formData.machineryEquipmentDescription}
+                onChange={handleChange("machineryEquipmentDescription")}
+                minLength={10}
+                maxLength={1000}
+              />
+            </div>
           </div>
 
           {/* 5. Rent & Payment Terms */}
@@ -438,21 +509,35 @@ const CommercialLeaseForm = ({ formType }) => {
                   currency
                   required
                 />
-                <NumberField
-                  label="Rent Payable by Day of Month"
-                  name="rentPaymentDay"
-                  value={formData.rentPaymentDay}
-                  onChange={handleChange("rentPaymentDay")}
-                  min={1}
-                  max={31}
+                <SelectField
+                  label="Payment Mode"
+                  name="rentPaymentMode"
+                  value={formData.rentPaymentMode}
+                  onChange={handleChange("rentPaymentMode")}
                   required
-                  helperText="Day of month when rent is due"
+                  options={[
+                    { value: "cheque", label: "Cheque" },
+                    { value: "bank_transfer", label: "Bank Transfer" },
+                    { value: "cash", label: "Cash" },
+                    { value: "online", label: "Online" },
+                    { value: "demand_draft", label: "Demand Draft" },
+                  ]}
                 />
               </div>
 
+              <NumberField
+                label="Late Payment Interest Rate (% per month)"
+                name="latePaymentInterestRate"
+                value={formData.latePaymentInterestRate}
+                onChange={handleChange("latePaymentInterestRate")}
+                min={0}
+                max={20}
+                step={0.5}
+                required
+              />
+
               <DynamicDefaultClauseSection
                 formData={formData}
-                setFormData={setFormData}
                 handleChange={handleChange}
               />
 
@@ -468,7 +553,6 @@ const CommercialLeaseForm = ({ formType }) => {
                     max={20}
                     step={0.5}
                     required
-                    helperText="Default: 5%"
                   />
                   <NumberField
                     label="Notice Period for Increase (Days)"
@@ -511,20 +595,10 @@ const CommercialLeaseForm = ({ formType }) => {
                   required
                 />
               </div>
-              <NumberField
-                label="Renewal Notice Period (Months)"
-                name="renewalNoticeMonths"
-                value={formData.renewalNoticeMonths}
-                onChange={handleChange("renewalNoticeMonths")}
-                min={1}
-                max={12}
-                required
-                helperText="Months prior to lease expiry for renewal request"
-              />
             </div>
           </div>
 
-          {/* 7. Security Deposit */}
+          {/* 7. Security Deposit - STATIC (NOT DYNAMIC) */}
           <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 hover:border-slate-700 transition-all">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-3 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-500 bg-opacity-10">
@@ -533,7 +607,7 @@ const CommercialLeaseForm = ({ formType }) => {
               <h2 className="text-2xl font-bold text-white">Security Deposit</h2>
             </div>
 
-            <div className="grid grid-cols-1 gap-4">
+            <div className="space-y-4">
               <NumberField
                 label="Security Deposit Amount (₹)"
                 name="securityDepositAmount"
@@ -543,11 +617,6 @@ const CommercialLeaseForm = ({ formType }) => {
                 currency
                 required
                 helperText="Refundable, interest-free"
-              />
-              <DynamicSecurityDepositSection 
-                formData={formData} 
-                setFormData={setFormData} 
-                handleChange={handleChange} 
               />
             </div>
           </div>
@@ -564,9 +633,9 @@ const CommercialLeaseForm = ({ formType }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <DateField
                 label="Lock-in Period Start Date"
-                name="lockInPeriodStartDate"
-                value={formData.lockInPeriodStartDate}
-                onChange={handleChange("lockInPeriodStartDate")}
+                name="lockInStartDate"
+                value={formData.lockInStartDate}
+                onChange={handleChange("lockInStartDate")}
                 required
               />
               <NumberField
@@ -577,7 +646,6 @@ const CommercialLeaseForm = ({ formType }) => {
                 min={1}
                 max={10}
                 required
-                helperText="Period during which lease cannot be terminated"
               />
             </div>
             <p className="mt-3 text-sm text-slate-400">
@@ -585,98 +653,100 @@ const CommercialLeaseForm = ({ formType }) => {
             </p>
           </div>
 
-          {/* 9. Maintenance & Utilities */}
+          {/* 9. Infrastructure */}
           <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 hover:border-slate-700 transition-all">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-3 rounded-xl bg-gradient-to-br from-yellow-500 to-amber-500 bg-opacity-10">
-                <Wrench className="w-6 h-6 text-yellow-400" />
+                <Zap className="w-6 h-6 text-yellow-400" />
               </div>
-              <h2 className="text-2xl font-bold text-white">Maintenance, Utilities & Repairs</h2>
+              <h2 className="text-2xl font-bold text-white">Infrastructure & Utilities</h2>
             </div>
 
             <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <NumberField
-                  label="Maintenance Fees Amount (₹)"
-                  name="maintenanceFeesAmount"
-                  value={formData.maintenanceFeesAmount}
-                  onChange={handleChange("maintenanceFeesAmount")}
-                  min={0}
-                  currency
-                  required
-                />
-                <SelectField
-                  label="Maintenance Payment Frequency"
-                  name="maintenanceFrequency"
-                  value={formData.maintenanceFrequency}
-                  onChange={handleChange("maintenanceFrequency")}
-                  required
-                  options={[
-                    { value: "monthly", label: "Monthly" },
-                    { value: "quarterly", label: "Quarterly" },
-                    { value: "half-yearly", label: "Half-yearly" },
-                    { value: "yearly", label: "Yearly" },
-                  ]}
-                />
-              </div>
-
-              <NumberField
-                label="Major Repair Reimbursement Period (Days)"
-                name="majorRepairReimbursementDays"
-                value={formData.majorRepairReimbursementDays}
-                onChange={handleChange("majorRepairReimbursementDays")}
-                min={7}
-                max={90}
-                required
-                helperText="Days for lessor to reimburse lessee for urgent repairs"
+              <TextInputField
+                label="Power Supply Capacity (in kW)"
+                name="powerSupplyCapacity"
+                placeholder="e.g., 50 kW"
+                value={formData.powerSupplyCapacity}
+                onChange={handleChange("powerSupplyCapacity")}
               />
-
-              <NumberField
+              <TextInputField
+                label="Water Consumption Limit (in KL/Month)"
+                name="waterConsumptionLimit"
+                placeholder="e.g., 10 KL"
+                value={formData.waterConsumptionLimit}
+                onChange={handleChange("waterConsumptionLimit")}
+              />
+              <SelectField
+                label="Waste Management Responsibility"
+                name="wasteManagementResponsibility"
+                value={formData.wasteManagementResponsibility}
+                onChange={handleChange("wasteManagementResponsibility")}
+                options={[
+                  { value: "lessee", label: "Lessee Responsible" },
+                  { value: "lessor", label: "Lessor Responsible" },
+                  { value: "shared", label: "Shared Responsibility" },
+                ]}
+              />
+              <TextInputField
                 label="Inspection Notice Period (Hours)"
                 name="inspectionNoticeHours"
+                placeholder="e.g., 48 hours"
                 value={formData.inspectionNoticeHours}
                 onChange={handleChange("inspectionNoticeHours")}
-                min={12}
-                max={168}
-                required
-                helperText="Advance notice required before property inspection"
-              />
-
-              <TextAreaField
-                label="Fixtures & Fittings Provided"
-                name="fixturesAndFittingsList"
-                placeholder="List all fixtures and fittings to be maintained by lessee (e.g., AC units, electrical fittings, furniture, etc.)"
-                value={formData.fixturesAndFittingsList}
-                onChange={handleChange("fixturesAndFittingsList")}
-                minLength={10}
               />
             </div>
           </div>
 
-          {/* 10. Default & Termination */}
+          {/* 10. Compliance & Safety */}
           <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 hover:border-slate-700 transition-all">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-3 rounded-xl bg-gradient-to-br from-red-500 to-pink-500 bg-opacity-10">
-                <AlertCircle className="w-6 h-6 text-red-400" />
+                <CheckCircle2 className="w-6 h-6 text-red-400" />
               </div>
-              <h2 className="text-2xl font-bold text-white">Default & Termination</h2>
+              <h2 className="text-2xl font-bold text-white">Compliance & Safety</h2>
             </div>
 
-            <div className="grid grid-cols-1 gap-4">
-              <NumberField
-                label="Default Remedy Period (Days)"
-                name="defaultRemedyDays"
-                value={formData.defaultRemedyDays}
-                onChange={handleChange("defaultRemedyDays")}
-                min={7}
-                max={90}
-                required
-                helperText="Days to remedy breach after notice"
+            <div className="space-y-4">
+              <SelectField
+                label="Fire Safety Compliance"
+                name="fireAffiliateCompliance"
+                value={formData.fireAffiliateCompliance}
+                onChange={handleChange("fireAffiliateCompliance")}
+                options={[
+                  { value: "yes", label: "Yes - Complied" },
+                  { value: "no", label: "No - Not Applicable" },
+                  { value: "in_progress", label: "In Progress" },
+                ]}
               />
-              <DynamicTerminationSection 
-                formData={formData} 
-                setFormData={setFormData} 
-                handleChange={handleChange} 
+              <SelectField
+                label="Labor Laws Compliance"
+                name="laborLawsCompliance"
+                value={formData.laborLawsCompliance}
+                onChange={handleChange("laborLawsCompliance")}
+                options={[
+                  { value: "yes", label: "Yes - Complied" },
+                  { value: "no", label: "No - Not Applicable" },
+                  { value: "in_progress", label: "In Progress" },
+                ]}
+              />
+              <SelectField
+                label="Environmental Compliance"
+                name="environmentalCompliance"
+                value={formData.environmentalCompliance}
+                onChange={handleChange("environmentalCompliance")}
+                options={[
+                  { value: "yes", label: "Yes - Complied" },
+                  { value: "no", label: "No - Not Applicable" },
+                  { value: "in_progress", label: "In Progress" },
+                ]}
+              />
+              <TextInputField
+                label="Pollution Control Approval Status"
+                name="pollutionControlApproval"
+                placeholder="e.g., Approved, Pending, Not Required"
+                value={formData.pollutionControlApproval}
+                onChange={handleChange("pollutionControlApproval")}
               />
             </div>
           </div>
@@ -687,11 +757,11 @@ const CommercialLeaseForm = ({ formType }) => {
               <div className="p-3 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-500 bg-opacity-10">
                 <Scale className="w-6 h-6 text-indigo-400" />
               </div>
-              <h2 className="text-2xl font-bold text-white">Legal Terms</h2>
+              <h2 className="text-2xl font-bold text-white">Legal Terms & Jurisdiction</h2>
             </div>
 
             <div className="space-y-4">
-              <div className="grid grid-cols-1  gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <TextInputField
                   label="Governing Law (State)"
                   name="governingLawState"
@@ -711,29 +781,8 @@ const CommercialLeaseForm = ({ formType }) => {
                   required
                 />
               </div>
-              <DynamicAssignmentByLessorSection 
-                formData={formData} 
-                setFormData={setFormData} 
-                handleChange={handleChange} 
-              />
-               
-            </div>
-          </div>
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 hover:border-slate-700 transition-all">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-3 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-500 bg-opacity-10">
-                <MapPin className="w-6 h-6 text-cyan-400" />
-              </div>
-              <h2 className="text-2xl font-bold text-white">Mortgage Priority Rights</h2>
-            </div>
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 gap-4">
-                <DynamicRightToMortgageSection 
-                  formData={formData} 
-                  setFormData={setFormData} 
-                  handleChange={handleChange} 
-                />
-                <SelectField
+
+              <SelectField
                 label="Notice Language"
                 name="noticeLanguage"
                 value={formData.noticeLanguage}
@@ -744,37 +793,57 @@ const CommercialLeaseForm = ({ formType }) => {
                   { value: "Hindi", label: "Hindi" },
                   { value: "English and Hindi", label: "English and Hindi" },
                 ]}
-              /> 
-              </div>
+              />
+
+              <SelectField
+                label="Notice Delivery Mode"
+                name="noticeDeliveryMode"
+                value={formData.noticeDeliveryMode}
+                onChange={handleChange("noticeDeliveryMode")}
+                required
+                options={[
+                  { value: "hand_delivery", label: "Hand Delivery" },
+                  { value: "courier", label: "Registered Courier" },
+                  { value: "email", label: "Email" },
+                  { value: "all", label: "All Modes" },
+                ]}
+              />
+
+              <DynamicRightToMortgageSection
+                formData={formData}
+                formType={formType}
+                handleChange={handleChange}
+              />
             </div>
           </div>
 
-           <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 hover:border-slate-700 transition-all">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-3 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-500 bg-opacity-10">
-                <Copy className="w-6 h-6 text-cyan-900" />
-              </div>
-              <h2 className="text-2xl font-bold text-white">Counterparts</h2>
-            </div>
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 gap-4">
-                <DynamicCounterpartsSection 
-                  formData={formData} 
-                  setFormData={setFormData}   
-                  handleChange={handleChange} 
-                />
-                
-              </div>
-            </div>
-          </div>
-
-          {/* 12. Schedule I - Property Description */}
+          {/* 12. Counterparts */}
           <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 hover:border-slate-700 transition-all">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-3 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-500 bg-opacity-10">
-                <MapPin className="w-6 h-6 text-cyan-400" />
+                <Copy className="w-6 h-6 text-cyan-400" />
               </div>
-              <h2 className="text-2xl font-bold text-white">Schedule I — Property Description</h2>
+              <h2 className="text-2xl font-bold text-white">Counterparts & Execution</h2>
+            </div>
+
+            <div className="space-y-4">
+              <DynamicCounterpartsSection
+                formData={formData}
+                formType={formType}
+                handleChange={handleChange}
+              />
+            </div>
+          </div>
+
+          {/* 13. Schedule I - Property Description */}
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 hover:border-slate-700 transition-all">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-3 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-500 bg-opacity-10">
+                <Home className="w-6 h-6 text-cyan-400" />
+              </div>
+              <h2 className="text-2xl font-bold text-white">
+                Schedule I — Property Description
+              </h2>
             </div>
 
             <div className="space-y-4">
@@ -873,26 +942,6 @@ const CommercialLeaseForm = ({ formType }) => {
             </div>
           </div>
 
-          {/* 13. Schedule II - Furniture & Fixtures */}
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 hover:border-slate-700 transition-all">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-3 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 bg-opacity-10">
-                <ClipboardList className="w-6 h-6 text-indigo-400" />
-              </div>
-              <h2 className="text-2xl font-bold text-white">Schedule II — Furniture & Fixtures</h2>
-            </div>
-
-            <TextAreaField
-              label="Description of Furniture and Fixtures"
-              name="furnitureFixturesDescription"
-              placeholder="List all furniture, fixtures, and fittings included with the property (e.g., 1. Air conditioner - 2 units, 2. Wooden desk - 3 units, etc.)"
-              value={formData.furnitureFixturesDescription}
-              onChange={handleChange("furnitureFixturesDescription")}
-              minLength={10}
-              maxLength={1000}
-            />
-          </div>
-
           {/* 14. Witnesses */}
           <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 hover:border-slate-700 transition-all">
             <div className="flex items-center gap-3 mb-6">
@@ -965,10 +1014,10 @@ const CommercialLeaseForm = ({ formType }) => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             type="submit"
-            className="w-full py-4 px-6 bg-gradient-to-r from-green-500 to-emerald-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-green-500/50 transition-all flex items-center justify-center gap-3 text-lg"
+            className="w-full py-4 px-6 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-orange-500/50 transition-all flex items-center justify-center gap-3 text-lg"
           >
             <Eye className="w-5 h-5" />
-            Preview Commercial Lease Deed
+            Preview Industrial Lease Deed
           </motion.button>
 
           <p className="text-center text-sm text-slate-500 mt-4">
@@ -980,5 +1029,4 @@ const CommercialLeaseForm = ({ formType }) => {
   );
 };
 
-
-export default CommercialLeaseForm;
+export default IndustrialLeaseDeedForm;
