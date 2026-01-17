@@ -6,7 +6,6 @@ import RentalLease from "./LeaseForms/RentalLease";
 import FlatLease from "./LeaseForms/FlatLease";
 import CommercialLeaseForm from "./LeaseForms/CommercialLeaseForm";
 import LandLease from "./LeaseForms/LandLease";
-import IndustrialLease from "./LeaseForms/LeaseDeed/Industrial/IndLeasedeedForm";
 import LeasedeedCommercialForm from "./LeaseForms/LeaseDeed/Commercial/LeasedeedForm";
 import LeasedeedIndustrialForm from "./LeaseForms/LeaseDeed/Industrial/IndLeasedeedForm";
 

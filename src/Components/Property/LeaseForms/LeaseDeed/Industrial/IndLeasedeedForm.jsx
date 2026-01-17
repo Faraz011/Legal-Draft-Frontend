@@ -7,11 +7,9 @@ import {
   Calendar,
   DollarSign,
   MapPin,
-  ClipboardList,
   Eye,
   Shield,
   Lock,
-  Wrench,
   Scale,
   AlertCircle,
   Copy,
@@ -34,9 +32,7 @@ import {
   selectFormData,
   selectFormState,
   updateField,
-  updateFormBulk,
   initializeForm,
-  submitLease,
 } from "../../../../../redux/PropertySlices/leaseSlice";
 
 
@@ -138,11 +134,11 @@ const IndustrialLeaseDeedForm = () => {
   // Initialize form on mount
   useEffect(() => {
     dispatch(initializeForm({ formType, initialData: defaultFormData }));
-  }, [dispatch]);
+  }, [dispatch, formType, defaultFormData]);
 
   // Get form data and state from Redux
   const formData = useSelector((state) => selectFormData(formType)(state));
-  const { status } = useSelector((state) => selectFormState(formType)(state));
+  useSelector((state) => selectFormState(formType)(state));
 
   // Handle field changes with Redux
   const handleChange = (field) => (e) => {

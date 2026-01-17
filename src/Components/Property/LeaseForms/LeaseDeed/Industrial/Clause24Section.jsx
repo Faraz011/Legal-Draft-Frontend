@@ -102,6 +102,8 @@ const DynamicCounterpartsSection = ({ formType, formData, handleChange }) => {
         case "advanced":
           signatureText = " Digital signatures shall comply with electronic signatures laws and regulations. Each party agrees to use advanced digital signature technology with timestamp verification and non-repudiation.";
           break;
+        default:
+          signatureText = "";
       }
       
       baseText += signatureText;
@@ -127,6 +129,8 @@ const DynamicCounterpartsSection = ({ formType, formData, handleChange }) => {
         case "physical_original":
           deliveryText = " At least one original physical counterpart signed by both parties shall be prepared and retained. Digital copies may be used for reference purposes only.";
           break;
+        default:
+          deliveryText = "";
       }
       
       baseText += deliveryText;
@@ -152,6 +156,8 @@ const DynamicCounterpartsSection = ({ formType, formData, handleChange }) => {
         case "no_specific":
           authText = " Counterparts need not be notarized or authenticated by any third party and shall be binding as executed.";
           break;
+        default:
+          authText = "";
       }
       
       baseText += authText;
