@@ -16,132 +16,129 @@ import DynamicRightToMortgageSection from "./Clause26Section";
 import DynamicCounterpartsSection from "../Industrial/Clause24Section";
 import {
   selectFormData,
-  selectFormState,
   updateField,
-  updateFormBulk,
-  initializeForm,   
-  submitLease
-} from "../../../../../redux/PropertySlices/leaseSlice";   
+  initializeForm,
+} from "../../../../../redux/PropertySlices/leaseSlice";
+
+// Default form data
+const defaultFormData = {
+  // Agreement Details
+  agreementPlace: "",
+  agreementDate: "",
+
+  // Lessor Details
+  lessorName: "",
+  lessorFatherName: "",
+  lessorResidentAddress: "",
+  lessorAadharNo: "",
+  lessorPanCardNo: "",
+
+  // Lessee Details
+  lesseeName: "",
+  lesseeFatherName: "",
+  lesseeResidentAddress: "",
+  lesseeAadharNo: "",
+  lesseePanCardNo: "",
+
+  // Property Details
+  propertyMunicipalNo: "",
+  propertySituatedAt: "",
+  
+  // Purpose
+  leasePurpose: "",
+
+  // Lease Rent Details
+  rentAmount: "",
+  rentPaymentDay: "",
+  latePaymentInterestRate: "",
+  annualRentIncreasePercent: "5",
+  rentIncreaseNoticeDays: "",
+
+  // Dynamic clauses
+  clause43: "",
+  clause44: "",
+
+  // Lease Term
+  leaseStartDate: "",
+  leaseEndDate: "",
+  renewalNoticeMonths: "",
+
+  // Security Deposit
+  securityDepositAmount: "",
+  securityDepositClause72: "",
+  securityDepositClause73: "",
+
+  // Lock-in Period
+  lockInPeriodStartDate: "",
+  lockInDurationYears: "1",
+
+  // Utilities & Maintenance
+  maintenanceFeesAmount: "",
+  maintenanceFrequency: "monthly",
+
+  // Repairs
+  majorRepairReimbursementDays: "",
+
+  // Inspection
+  inspectionNoticeHours: "",
+
+  // Fixtures Provided
+  fixturesAndFittingsList: "",
+
+  // Default & Termination
+  defaultRemedyDays: "",
+  terminationClause201: "",
+  terminationClause202: "",
+
+  // Governing Law & Jurisdiction
+  governingLawState: "",
+  assignmentClause23: "",
+  courtJurisdiction: "",
+
+  mortgageClause26: "",
+  
+  // Notices
+  noticeLanguage: "English",
+
+  // Clause 30
+  counterpartClause30: "",
+
+  // Schedule I - Property Description
+  buildingNo: "",
+  propertyAreaSqMtrs: "",
+  registrationDistrict: "",
+  subDivisionTaluka: "",
+  corporationLimits: "",
+  plotNo: "",
+  surveyNo: "",
+  boundaryEast: "",
+  boundarySouth: "",
+  boundaryWest: "",
+  boundaryNorth: "",
+
+  // Schedule II
+  furnitureFixturesDescription: "",
+
+  // Witnesses
+  witness1Name: "",
+  witness1Address: "",
+  witness2Name: "",
+  witness2Address: "",
+};
 
 
 const LeasedeedForm = () => {
   const dispatch = useDispatch();
   const formType = "deed";
 
-  // Default form data
-  const defaultFormData = {
-    // Agreement Details
-    agreementPlace: "",
-    agreementDate: "",
 
-    // Lessor Details
-    lessorName: "",
-    lessorFatherName: "",
-    lessorResidentAddress: "",
-    lessorAadharNo: "",
-    lessorPanCardNo: "",
 
-    // Lessee Details
-    lesseeName: "",
-    lesseeFatherName: "",
-    lesseeResidentAddress: "",
-    lesseeAadharNo: "",
-    lesseePanCardNo: "",
-
-    // Property Details
-    propertyMunicipalNo: "",
-    propertySituatedAt: "",
-    
-    // Purpose
-    leasePurpose: "",
-
-    // Lease Rent Details
-    rentAmount: "",
-    rentPaymentDay: "",
-    latePaymentInterestRate: "",
-    annualRentIncreasePercent: "5",
-    rentIncreaseNoticeDays: "",
-
-    // Dynamic clauses
-    clause43: "",
-    clause44: "",
-
-    // Lease Term
-    leaseStartDate: "",
-    leaseEndDate: "",
-    renewalNoticeMonths: "",
-
-    // Security Deposit
-    securityDepositAmount: "",
-    securityDepositClause72: "",
-    securityDepositClause73: "",
-
-    // Lock-in Period
-    lockInPeriodStartDate: "",
-    lockInDurationYears: "1",
-
-    // Utilities & Maintenance
-    maintenanceFeesAmount: "",
-    maintenanceFrequency: "monthly",
-
-    // Repairs
-    majorRepairReimbursementDays: "",
-
-    // Inspection
-    inspectionNoticeHours: "",
-
-    // Fixtures Provided
-    fixturesAndFittingsList: "",
-
-    // Default & Termination
-    defaultRemedyDays: "",
-    terminationClause201: "",
-    terminationClause202: "",
-
-    // Governing Law & Jurisdiction
-    governingLawState: "",
-    assignmentClause23: "",
-    courtJurisdiction: "",
-
-    mortgageClause26: "",
-    
-    // Notices
-    noticeLanguage: "English",
-
-    // Clause 30
-    counterpartClause30: "",
-
-    // Schedule I - Property Description
-    buildingNo: "",
-    propertyAreaSqMtrs: "",
-    registrationDistrict: "",
-    subDivisionTaluka: "",
-    corporationLimits: "",
-    plotNo: "",
-    surveyNo: "",
-    boundaryEast: "",
-    boundarySouth: "",
-    boundaryWest: "",
-    boundaryNorth: "",
-
-    // Schedule II
-    furnitureFixturesDescription: "",
-
-    // Witnesses
-    witness1Name: "",
-    witness1Address: "",
-    witness2Name: "",
-    witness2Address: "",
-  };
-
-  // Initialize form on mount
   useEffect(() => {
     dispatch(initializeForm({ formType, initialData: defaultFormData }));
-  }, [dispatch]);
+  }, [dispatch, formType]);
 
   // Get form data and state from Redux
   const formData = useSelector((state) => selectFormData(formType)(state));
-  const { status } = useSelector((state) => selectFormState(formType)(state));
 
 
   // Handle field changes with Redux

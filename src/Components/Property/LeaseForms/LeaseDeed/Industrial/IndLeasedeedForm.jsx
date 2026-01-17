@@ -131,10 +131,9 @@ const IndustrialLeaseDeedForm = () => {
   const formType = "industrial_deed";
 
 
-  // Initialize form on mount
   useEffect(() => {
     dispatch(initializeForm({ formType, initialData: defaultFormData }));
-  }, [dispatch, formType, defaultFormData]);
+  }, [dispatch, formType]);
 
   // Get form data and state from Redux
   const formData = useSelector((state) => selectFormData(formType)(state));

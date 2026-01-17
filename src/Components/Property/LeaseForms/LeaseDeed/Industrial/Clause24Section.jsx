@@ -1,6 +1,5 @@
 import React, { useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useDispatch } from "react-redux";
 import { Copy,Info,CheckCircle,FileCheck,Zap} from "lucide-react";
 import NumberField from "../../../../FormComponents/NumberField";
 import TextAreaField from "../../../../FormComponents/TextAreaField";
@@ -10,7 +9,6 @@ import SelectField from "../../../../FormComponents/SelectField";
 
 const DynamicCounterpartsSection = ({ formType, formData, handleChange }) => {
   
-  
 
   // Helper to show/hide conditional fields
   const showNumberOfCopies = formData.counterpartsClauseType === "specific_number";
@@ -19,18 +17,6 @@ const DynamicCounterpartsSection = ({ formType, formData, handleChange }) => {
   const showAuthenticationMethod = formData.enableAuthenticationMethod;
   const showCustomClause = formData.counterpartsClauseType === "custom";
   const showExecutionTiming = formData.enableExecutionTiming;
-
-  // Update form data with generated clauses whenever they change
-  useEffect(() => {
-    const clause24 = generateClause24Preview();
-    
-    // Use handleChange to update the fields
-    handleChange('counterpartClause24')(clause24);
-    handleChange('clause24')(clause24);
-  }, [
-    generateClause24Preview,
-    handleChange
-  ]);
 
   // Generate preview of clause 24
   const generateClause24Preview = useCallback(() => {
@@ -167,8 +153,19 @@ const DynamicCounterpartsSection = ({ formType, formData, handleChange }) => {
     formData.authenticationMethod,
     formData.customCounterpartsClause,
     formData.enableExecutionTiming,
-    formData.executionTimingRequirement,
-    formData.enableDeliverySpecification 
+    formData.executionTimingRequirement
+  ]);
+
+  // Update form data with generated clauses whenever they change
+  useEffect(() => {
+    const clause24 = generateClause24Preview();
+    
+    // Use handleChange to update the fields
+    handleChange('counterpartClause24')(clause24);
+    handleChange('clause24')(clause24);
+  }, [
+    generateClause24Preview,
+    handleChange
   ]);
 
   return (
