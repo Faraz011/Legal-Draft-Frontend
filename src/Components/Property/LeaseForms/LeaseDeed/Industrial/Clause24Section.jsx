@@ -1,20 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useDispatch, useSelector } from "react-redux";
-import { Copy,Info,CheckCircle,AlertTriangle,FileCheck,Zap} from "lucide-react";
+import { useDispatch } from "react-redux";
+import { Copy,Info,CheckCircle,FileCheck,Zap} from "lucide-react";
 import NumberField from "../../../../FormComponents/NumberField";
 import TextAreaField from "../../../../FormComponents/TextAreaField";
 import CheckboxField from "../../../../FormComponents/CheckboxField";
 import SelectField from "../../../../FormComponents/SelectField";
-import {
-  selectFormData,
-  updateField,
-  updateFormBulk
-} from "../../../../../redux/PropertySlices/leaseSlice";
 
 
 const DynamicCounterpartsSection = ({ formType, formData, handleChange }) => {
-  const dispatch = useDispatch();
+  
   
 
   // Helper to show/hide conditional fields
@@ -33,21 +28,12 @@ const DynamicCounterpartsSection = ({ formType, formData, handleChange }) => {
     handleChange('counterpartClause24')(clause24);
     handleChange('clause24')(clause24);
   }, [
-    formData.counterpartsClauseType,
-    formData.numberOfCounterparts,
-    formData.enableDigitalSignature,
-    formData.digitalSignatureType,
-    formData.enableDeliveryMethod,
-    formData.deliveryMethod,
-    formData.enableAuthenticationMethod,
-    formData.authenticationMethod,
-    formData.customCounterpartsClause,
-    formData.enableExecutionTiming,
-    formData.executionTimingRequirement
+    generateClause24Preview,
+    handleChange
   ]);
 
   // Generate preview of clause 24
-  const generateClause24Preview = () => {
+  const generateClause24Preview = useCallback(() => {
     let baseText = "";
     
     switch (formData.counterpartsClauseType) {
@@ -170,7 +156,20 @@ const DynamicCounterpartsSection = ({ formType, formData, handleChange }) => {
     }
 
     return baseText;
-  };
+  }, [
+    formData.counterpartsClauseType,
+    formData.numberOfCounterparts,
+    formData.enableDigitalSignature,
+    formData.digitalSignatureType,
+    formData.enableDeliveryMethod,
+    formData.deliveryMethod,
+    formData.enableAuthenticationMethod,
+    formData.authenticationMethod,
+    formData.customCounterpartsClause,
+    formData.enableExecutionTiming,
+    formData.executionTimingRequirement,
+    formData.enableDeliverySpecification 
+  ]);
 
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 hover:border-slate-700 transition-all">

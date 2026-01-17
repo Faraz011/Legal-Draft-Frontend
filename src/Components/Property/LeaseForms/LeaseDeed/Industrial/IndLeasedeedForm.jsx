@@ -30,106 +30,106 @@ import DynamicRightToMortgageSection from "./Clause19Section";
 import DynamicCounterpartsSection from "./Clause24Section";
 import {
   selectFormData,
-  selectFormState,
   updateField,
   initializeForm,
 } from "../../../../../redux/PropertySlices/leaseSlice";
+
+// Default form data - 37 fields total
+const defaultFormData = {
+  // Agreement Details (2 fields)
+  agreementPlace: "",
+  agreementDate: "",
+
+  // Lessor Details (5 fields)
+  lessorName: "",
+  lessorFatherName: "",
+  lessorResidentAddress: "",
+  lessorAadharNo: "",
+  lessorPanCardNo: "",
+
+  // Lessee Details (5 fields)
+  lesseeName: "",
+  lesseeFatherName: "",
+  lesseeResidentAddress: "",
+  lesseeAadharNo: "",
+  lesseePanCardNo: "",
+
+  // Property & Purpose (2 fields)
+  propertySituatedAt: "",
+  propertyMunicipalNo: "",
+
+  // Industrial Operations (2 fields)
+  industrialPurpose: "",
+  machineryEquipmentDescription: "",
+
+  // Rent & Payment (6 fields)
+  rentAmount: "",
+  rentPaymentMode: "bank_transfer",
+  latePaymentInterestRate: "2.5",
+  defaultRemedyDays: "",
+  annualRentIncreasePercent: "5",
+  rentIncreaseNoticeDays: "90",
+
+  // Dynamic Clauses (4 fields - CORRECTED: removed clause72, clause73)
+  clause43: "",
+  clause44: "",
+  mortgageClause19: "",
+  counterpartClause24: "",
+
+  // Lease Term (2 fields)
+  leaseStartDate: "",
+  leaseEndDate: "",
+
+  // Security Deposit (1 field - STATIC, NOT DYNAMIC)
+  securityDepositAmount: "",
+
+  // Lock-in Period (2 fields)
+  lockInDurationYears: "1",
+  lockInStartDate: "",
+
+  // Infrastructure (4 fields)
+  powerSupplyCapacity: "",
+  waterConsumptionLimit: "",
+  wasteManagementResponsibility: "",
+  inspectionNoticeHours: "48",
+
+  // Compliance & Safety (4 fields)
+  fireAffiliateCompliance: "",
+  laborLawsCompliance: "",
+  environmentalCompliance: "",
+  pollutionControlApproval: "",
+
+  // Legal Terms (4 fields)
+  governingLawState: "",
+  courtJurisdiction: "",
+  noticeLanguage: "English",
+  noticeDeliveryMode: "courier",
+
+  // Schedule I - Property (11 fields)
+  buildingNo: "",
+  propertyAreaSqMtrs: "",
+  registrationDistrict: "",
+  subDivisionTaluka: "",
+  corporationLimits: "",
+  plotNo: "",
+  surveyNo: "",
+  boundaryEast: "",
+  boundarySouth: "",
+  boundaryWest: "",
+  boundaryNorth: "",
+
+  // Witnesses (4 fields)
+  witness1Name: "",
+  witness1Address: "",
+  witness2Name: "",
+  witness2Address: "",
+};
 
 
 const IndustrialLeaseDeedForm = () => {
   const dispatch = useDispatch();
   const formType = "industrial_deed";
 
-  // Default form data - 37 fields total
-  const defaultFormData = {
-    // Agreement Details (2 fields)
-    agreementPlace: "",
-    agreementDate: "",
-
-    // Lessor Details (5 fields)
-    lessorName: "",
-    lessorFatherName: "",
-    lessorResidentAddress: "",
-    lessorAadharNo: "",
-    lessorPanCardNo: "",
-
-    // Lessee Details (5 fields)
-    lesseeName: "",
-    lesseeFatherName: "",
-    lesseeResidentAddress: "",
-    lesseeAadharNo: "",
-    lesseePanCardNo: "",
-
-    // Property & Purpose (2 fields)
-    propertySituatedAt: "",
-    propertyMunicipalNo: "",
-
-    // Industrial Operations (2 fields)
-    industrialPurpose: "",
-    machineryEquipmentDescription: "",
-
-    // Rent & Payment (6 fields)
-    rentAmount: "",
-    rentPaymentMode: "bank_transfer",
-    latePaymentInterestRate: "2.5",
-    defaultRemedyDays: "",
-    annualRentIncreasePercent: "5",
-    rentIncreaseNoticeDays: "90",
-
-    // Dynamic Clauses (4 fields - CORRECTED: removed clause72, clause73)
-    clause43: "",
-    clause44: "",
-    mortgageClause19: "",
-    counterpartClause24: "",
-
-    // Lease Term (2 fields)
-    leaseStartDate: "",
-    leaseEndDate: "",
-
-    // Security Deposit (1 field - STATIC, NOT DYNAMIC)
-    securityDepositAmount: "",
-
-    // Lock-in Period (2 fields)
-    lockInDurationYears: "1",
-    lockInStartDate: "",
-
-    // Infrastructure (4 fields)
-    powerSupplyCapacity: "",
-    waterConsumptionLimit: "",
-    wasteManagementResponsibility: "",
-    inspectionNoticeHours: "48",
-
-    // Compliance & Safety (4 fields)
-    fireAffiliateCompliance: "",
-    laborLawsCompliance: "",
-    environmentalCompliance: "",
-    pollutionControlApproval: "",
-
-    // Legal Terms (4 fields)
-    governingLawState: "",
-    courtJurisdiction: "",
-    noticeLanguage: "English",
-    noticeDeliveryMode: "courier",
-
-    // Schedule I - Property (11 fields)
-    buildingNo: "",
-    propertyAreaSqMtrs: "",
-    registrationDistrict: "",
-    subDivisionTaluka: "",
-    corporationLimits: "",
-    plotNo: "",
-    surveyNo: "",
-    boundaryEast: "",
-    boundarySouth: "",
-    boundaryWest: "",
-    boundaryNorth: "",
-
-    // Witnesses (4 fields)
-    witness1Name: "",
-    witness1Address: "",
-    witness2Name: "",
-    witness2Address: "",
-  };
 
   // Initialize form on mount
   useEffect(() => {
@@ -138,7 +138,6 @@ const IndustrialLeaseDeedForm = () => {
 
   // Get form data and state from Redux
   const formData = useSelector((state) => selectFormData(formType)(state));
-  useSelector((state) => selectFormState(formType)(state));
 
   // Handle field changes with Redux
   const handleChange = (field) => (e) => {
