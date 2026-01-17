@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ShieldCheck, Mail, MapPin, Building2, Hash, ArrowRight } from "lucide-react";
+import { ShieldCheck, Mail, MapPin, ArrowRight } from "lucide-react";
 
 const Footer = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -52,7 +52,7 @@ const Footer = () => {
             </p>
             
             <div className="flex items-center gap-3 pt-2">
-              <a href="#" className="group relative px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-cyan-600 rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20">
+              <a href="#branding" className="group relative px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-cyan-600 rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20">
                 <span className="relative z-10 flex items-center gap-1.5">
                   Get Started
                   <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
@@ -154,9 +154,9 @@ const Footer = () => {
             <p>© {new Date().getFullYear()} LegalDraft Technologies Private Limited. All rights reserved.</p>
           </div>
           <div className="flex items-center gap-6">
-            <a href="#" className="hover:text-white transition-colors">Status</a>
-            <a href="#" className="hover:text-white transition-colors">Documentation</a>
-            <a href="#" className="hover:text-white transition-colors">Support</a>
+            <a href="/status" className="hover:text-white transition-colors">Status</a>
+            <a href="/docs" className="hover:text-white transition-colors">Documentation</a>
+            <a href="/support" className="hover:text-white transition-colors">Support</a>
           </div>
         </div>
       </div>
@@ -164,7 +164,7 @@ const Footer = () => {
       {/* Subtle watermark */}
       <div 
         className="absolute bottom-0 left-0 right-0 text-center overflow-visible opacity-10 pointer-events-none transition-all duration-500"
-        
+        style={watermarkStyle}
       >
         <h2 className="whitespace-nowrap text-[15vw] font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-blue-100/50 leading-none select-none">
           LEGAL DRAFT

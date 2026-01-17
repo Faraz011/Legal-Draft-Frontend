@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Badge, Button, Link } from "@nextui-org/react";
+import { Button, Link } from "@nextui-org/react";
 import { ArrowRight, FileText, Scale } from "lucide-react";
 import MagicBentoDesktop from "./MagicBentoDesktop";
 import MagicBentoMobile from "./MagicBentoMobile";
@@ -10,14 +10,14 @@ const Hero = () => {
   const [isTyping, setIsTyping] = useState(true);
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
   
-  const phrases = [
-    'Precision Legal Documentation',
-    'Expert Legal Drafting',
-    'Compliant & Accurate',
-    'Tailored Legal Solutions'
-  ];
-
   useEffect(() => {
+    const phrases = [
+      'Precision Legal Documentation',
+      'Expert Legal Drafting',
+      'Compliant & Accurate',
+      'Tailored Legal Solutions'
+    ];
+
     const currentPhrase = phrases[currentPhraseIndex];
     let timeout;
 
@@ -43,7 +43,7 @@ const Hero = () => {
     }
 
     return () => clearTimeout(timeout);
-  }, [displayText, isTyping, currentPhraseIndex, phrases]);
+  }, [displayText, isTyping, currentPhraseIndex]);
 
   return (
     <section className="relative w-full z-20 min-h-[85vh] sm:min-h-[90vh] flex items-center py-8 mt-16 sm:py-12 md:py-16 lg:py-20 xl:py-24">

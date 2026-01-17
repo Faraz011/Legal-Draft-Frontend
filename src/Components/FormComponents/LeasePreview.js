@@ -14,7 +14,6 @@ const LeasePreview = ({ formType, onEdit }) => {
   const { 
     handleSubmit, 
     formData, 
-    status, 
     error,
     isLoading 
   } = useLeaseSubmit(formType);
