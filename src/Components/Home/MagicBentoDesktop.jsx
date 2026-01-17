@@ -473,7 +473,7 @@ const useMobileDetection = () => {
   return isMobile;
 };
 
-const MagicBento = ({
+const MagicBentoDesktop = ({
   textAutoHide = true,
   enableStars = true,
   enableSpotlight = true,
@@ -818,4 +818,4 @@ const MagicBento = ({
   );
 };
 
-export default MagicBento;
+export default MagicBentoDesktop;

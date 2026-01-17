@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Badge, Button, Link } from "@nextui-org/react";
 import { ArrowRight, FileText, Scale } from "lucide-react";
-import MagicBentoDesktop from "./MagicBentoDestop";
+import MagicBentoDesktop from "./MagicBentoDesktop";
 import MagicBentoMobile from "./MagicBentoMobile";
 
 
