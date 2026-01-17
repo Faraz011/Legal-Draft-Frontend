@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { 
@@ -41,7 +41,6 @@ const DynamicRightToMortgageSection = () => {
   const showLienProtection = formData.enableLienProtection;
   const showPriorityRights = formData.enablePriorityRights;
 
-  // Update form data with generated clauses whenever they change
   useEffect(() => {
     const clause26 = generateClause26Preview();
     
@@ -53,20 +52,12 @@ const DynamicRightToMortgageSection = () => {
       }
     }));
   }, [
-    formData.mortgageClauseType,
-    formData.lienNoticeRequirement,
-    formData.mortgagorConsentDays,
-    formData.enableMortgageRestrictions,
-    formData.mortgageRestrictions,
-    formData.customMortgageClause,
-    formData.enableLienProtection,
-    formData.lienProtectionType,
-    formData.customLienProtection,
-    formData.enablePriorityRights,
-    formData.priorityRightsType
+    generateClause26Preview,
+    dispatch,
+    formType
   ]);
 
-  const generateClause26Preview = () => {
+  const generateClause26Preview = useCallback(() => {
     let baseText = "";
     
     switch (formData.mortgageClauseType) {
@@ -123,6 +114,8 @@ const DynamicRightToMortgageSection = () => {
         case "custom":
           protectionText = formData.customLienProtection ? ` ${formData.customLienProtection}` : "";
           break;
+        default:
+          protectionText = "";
       }
       
       baseText += protectionText;
@@ -144,6 +137,8 @@ const DynamicRightToMortgageSection = () => {
         case "negotiated":
           priorityText = " The priority of the Lessee's lease relative to any mortgage or lien shall be negotiated and documented in writing between the parties and any mortgagee.";
           break;
+        default:
+          priorityText = "";
       }
       
       baseText += priorityText;
@@ -158,7 +153,20 @@ const DynamicRightToMortgageSection = () => {
     }
 
     return baseText;
-  };
+  }, [
+    formData.mortgageClauseType,
+    formData.lienNoticeRequirement,
+    formData.mortgagorConsentDays,
+    formData.enableMortgageRestrictions,
+    formData.mortgageRestrictions,
+    formData.customMortgageClause,
+    formData.enableLienProtection,
+    formData.lienProtectionType,
+    formData.customLienProtection,
+    formData.enablePriorityRights,
+    formData.priorityRightsType,
+    formData.maxMortgageLTV
+  ]);
 
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 hover:border-slate-700 transition-all">

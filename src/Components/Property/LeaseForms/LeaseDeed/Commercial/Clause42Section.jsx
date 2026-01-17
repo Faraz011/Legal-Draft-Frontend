@@ -1,8 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { 
-  AlertCircle, 
   Info,
   CheckCircle,
   XCircle
@@ -11,11 +10,6 @@ import SelectField from "../../../../FormComponents/SelectField";
 import NumberField from "../../../../FormComponents/NumberField";
 import TextAreaField from "../../../../FormComponents/TextAreaField";
 import CheckboxField from "../../../../FormComponents/CheckboxField";
-import {
-  selectFormData,
-  updateField,
-  updateFormBulk
-} from "../../../../../redux/PropertySlices/leaseSlice";
 
 
 const DynamicDefaultClauseSection = ({ formType, formData, handleChange }) => {
@@ -39,23 +33,14 @@ const DynamicDefaultClauseSection = ({ formType, formData, handleChange }) => {
      handleChange('clause43')(clause43);
   handleChange('clause44')(clause44);
 }, [
-    formData.defaultConsecutiveMonths,
-    formData.defaultPenaltyType,
-    formData.lateFeeAmount,
-    formData.lateFeeCurrency,
-    formData.penaltyInterestRate,
-    formData.customPenaltyClause,
-    formData.additionalPenaltyRights,
-    formData.enableRemedyPeriod,
-    formData.noticePeriodDays,
-    formData.remedyPeriodAction,
-    formData.customRemedyClause,
-    dispatch,
-    formType
+    generateClause43Preview,
+    generateClause44Preview,
+    handleChange,
+    formData.enableRemedyPeriod
   ]);
 
 
-  const generateClause43Preview = () => {
+  const generateClause43Preview = useCallback(() => {
     const months = formData.defaultConsecutiveMonths || "___";
     let penaltyText = "";
 
@@ -109,10 +94,18 @@ const DynamicDefaultClauseSection = ({ formType, formData, handleChange }) => {
       : "";
 
     return `It is hereby stipulated that if the Lessee defaults in the payment of rent for a period of ${months} consecutive months, the Lessor shall have the right, in addition to other rights and remedies available under this Lease Deed and applicable laws, ${penaltyText}${additionalRights}.`;
-  };
+  }, [
+    formData.defaultConsecutiveMonths,
+    formData.defaultPenaltyType,
+    formData.lateFeeAmount,
+    formData.lateFeeCurrency,
+    formData.penaltyInterestRate,
+    formData.customPenaltyClause,
+    formData.additionalPenaltyRights
+  ]);
 
 
-  const generateClause44Preview = () => {
+  const generateClause44Preview = useCallback(() => {
     if (!formData.enableRemedyPeriod) {
       return null;
     }
@@ -139,7 +132,12 @@ const DynamicDefaultClauseSection = ({ formType, formData, handleChange }) => {
     }
 
     return `However, the Lessor must provide written notice to the Lessee of its intention to enforce the penalty specified in clause 4.3. If the Lessee settles the overdue rent within ${days} days from the issuance of the notice by the Lessor, the Lessor shall not have the right to enforce the penalty. Conversely, if the Lessee fails to pay the overdue rent within ${days} days from the date of the notice issued by the Lessor, ${actionText}.`;
-  };
+  }, [
+    formData.enableRemedyPeriod,
+    formData.noticePeriodDays,
+    formData.remedyPeriodAction,
+    formData.customRemedyClause
+  ]);
 
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 hover:border-slate-700 transition-all">

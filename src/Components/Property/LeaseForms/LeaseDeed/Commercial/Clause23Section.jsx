@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { 
@@ -19,7 +19,6 @@ import {
   updateFormBulk
 } from "../../../../../redux/PropertySlices/leaseSlice";
 
-
 const DynamicAssignmentByLessorSection = () => {
   const dispatch = useDispatch();
   const formType = "deed";
@@ -36,26 +35,7 @@ const DynamicAssignmentByLessorSection = () => {
   const showCustomClause = formData.assignmentClauseType === "custom";
   const showAssigneeObligation = formData.enableAssigneeObligation;
 
-  
-  useEffect(() => {
-    const clause23 = generateClause23Preview();
-    
-    dispatch(updateFormBulk({ formType, data: { assignmentClause23: clause23, clause23 } }));
-  }, [
-    formData.assignmentClauseType,
-    formData.lesseeLossOfRights,
-    formData.notificationDays,
-    formData.enableAssignmentRestrictions,
-    formData.restrictionType,
-    formData.customRestrictions,
-    formData.customAssignmentClause,
-    formData.enableAssigneeObligation,
-    formData.assigneeObligations,
-    formData.postAssignmentLessorLiability
-  ]);
-
-
-  const generateClause23Preview = () => {
+  const generateClause23Preview = useCallback(() => {
     let baseText = "";
     
     switch (formData.assignmentClauseType) {
@@ -66,7 +46,6 @@ const DynamicAssignmentByLessorSection = () => {
       case "lessee_consent":
         baseText += "Any sale, assignment, conveyance, or transfer of the Lessor's interest in the Leased Premises or his rights and obligations under this Lease Deed shall require the prior written consent of the Lessee, which shall not be unreasonably withheld or delayed.";
         
-       
         if (formData.lesseeLossOfRights) {
           baseText += " However, if the Lessee unreasonably refuses consent, the Lessor may proceed with the assignment, and the Lessee shall retain all rights under this Lease Deed.";
         }
@@ -91,7 +70,6 @@ const DynamicAssignmentByLessorSection = () => {
         baseText += "[Select assignment type]";
     }
 
-
     if (formData.enableAssignmentRestrictions && formData.assignmentClauseType !== "limited_assignment") {
       let restrictionText = "";
       
@@ -115,12 +93,13 @@ const DynamicAssignmentByLessorSection = () => {
         case "custom":
           restrictionText = formData.customRestrictions ? ` ${formData.customRestrictions}` : "";
           break;
+        default:
+          restrictionText = "";
       }
       
       baseText += restrictionText;
     }
 
-  
     if (formData.enableAssigneeObligation) {
       const obligations = formData.assigneeObligations || [];
       if (obligations.length > 0) {
@@ -128,7 +107,6 @@ const DynamicAssignmentByLessorSection = () => {
       }
     }
 
-    
     if (formData.postAssignmentLessorLiability) {
       switch (formData.postAssignmentLessorLiability) {
         case "no_liability":
@@ -146,7 +124,28 @@ const DynamicAssignmentByLessorSection = () => {
     }
 
     return baseText;
-  };
+  }, [
+    formData.assignmentClauseType,
+    formData.lesseeLossOfRights,
+    formData.notificationDays,
+    formData.enableAssignmentRestrictions,
+    formData.restrictionType,
+    formData.customRestrictions,
+    formData.customAssignmentClause,
+    formData.enableAssigneeObligation,
+    formData.assigneeObligations,
+    formData.postAssignmentLessorLiability
+  ]);
+
+  useEffect(() => {
+    const clause23 = generateClause23Preview();
+    
+    dispatch(updateFormBulk({ formType, data: { assignmentClause23: clause23, clause23 } }));
+  }, [
+    generateClause23Preview,
+    dispatch,
+    formType
+  ]);
 
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 hover:border-slate-700 transition-all">
@@ -160,7 +159,6 @@ const DynamicAssignmentByLessorSection = () => {
         </div>
       </div>
 
-      {/* Info Banner */}
       <div className="mb-6 p-4 bg-purple-500/10 border border-purple-500/30 rounded-lg flex items-start gap-3">
         <Info className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
         <div className="text-sm text-purple-200">
@@ -169,7 +167,6 @@ const DynamicAssignmentByLessorSection = () => {
         </div>
       </div>
 
-      {/* Section 1: Assignment Clause Type */}
       <div className="space-y-4 mb-6 p-5 bg-slate-800/50 rounded-xl border border-slate-700">
         <h3 className="text-lg font-semibold text-white flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-gradient-to-r from-purple-500 to-pink-500"></span>
@@ -183,31 +180,15 @@ const DynamicAssignmentByLessorSection = () => {
           onChange={handleChange("assignmentClauseType")}
           required
           options={[
-            { 
-              value: "unrestricted", 
-              label: "Unrestricted Assignment (Lessor-Friendly)" 
-            },
-            { 
-              value: "lessee_consent", 
-              label: "Requires Lessee Consent (Tenant-Friendly)" 
-            },
-            { 
-              value: "with_notification", 
-              label: "Assignment with Notification (Balanced)" 
-            },
-            { 
-              value: "limited_assignment", 
-              label: "Limited Assignment (Specific Categories)" 
-            },
-            { 
-              value: "custom", 
-              label: "Custom Assignment Clause" 
-            },
+            { value: "unrestricted", label: "Unrestricted Assignment (Lessor-Friendly)" },
+            { value: "lessee_consent", label: "Requires Lessee Consent (Tenant-Friendly)" },
+            { value: "with_notification", label: "Assignment with Notification (Balanced)" },
+            { value: "limited_assignment", label: "Limited Assignment (Specific Categories)" },
+            { value: "custom", label: "Custom Assignment Clause" },
           ]}
           helperText="Define whether lessor needs lessee approval to assign property"
         />
 
-        {/* Lessee Consent Option */}
         {showLesseeConsent && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
@@ -218,9 +199,7 @@ const DynamicAssignmentByLessorSection = () => {
             <div className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
               <div>
                 <label className="text-white text-sm font-medium">Lessee Retains Rights if Consent Unreasonably Refused?</label>
-                <p className="text-xs text-slate-400 mt-1">
-                  Protects lessee if consent is withheld arbitrarily
-                </p>
+                <p className="text-xs text-slate-400 mt-1">Protects lessee if consent is withheld arbitrarily</p>
               </div>
               <CheckboxField
                 label=""
@@ -232,7 +211,6 @@ const DynamicAssignmentByLessorSection = () => {
           </motion.div>
         )}
 
-        {/* Notification Period Option */}
         {showNotification && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
@@ -253,7 +231,6 @@ const DynamicAssignmentByLessorSection = () => {
           </motion.div>
         )}
 
-        {/* Custom Clause */}
         {showCustomClause && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
@@ -276,7 +253,6 @@ const DynamicAssignmentByLessorSection = () => {
         )}
       </div>
 
-      {/* Section 2: Assignment Restrictions */}
       <div className="space-y-4 mb-6 p-5 bg-slate-800/50 rounded-xl border border-slate-700">
         <div className="flex items-start justify-between">
           <div>
@@ -284,11 +260,8 @@ const DynamicAssignmentByLessorSection = () => {
               <span className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500"></span>
               Assignment Restrictions (Optional)
             </h3>
-            <p className="text-sm text-slate-400 mt-1">
-              Add restrictions on who can become assignee
-            </p>
+            <p className="text-sm text-slate-400 mt-1">Add restrictions on who can become assignee</p>
           </div>
-          
           <CheckboxField
             label=""
             name="enableAssignmentRestrictions"
@@ -312,26 +285,11 @@ const DynamicAssignmentByLessorSection = () => {
                 onChange={handleChange("restrictionType")}
                 required
                 options={[
-                  { 
-                    value: "financial_status", 
-                    label: "Financial Creditworthiness" 
-                  },
-                  { 
-                    value: "business_type", 
-                    label: "Business Type Compatibility" 
-                  },
-                  { 
-                    value: "no_illegal", 
-                    label: "No Illegal Activities Certification" 
-                  },
-                  { 
-                    value: "compliance", 
-                    label: "Legal Compliance Agreement" 
-                  },
-                  { 
-                    value: "custom", 
-                    label: "Custom Restrictions" 
-                  },
+                  { value: "financial_status", label: "Financial Creditworthiness" },
+                  { value: "business_type", label: "Business Type Compatibility" },
+                  { value: "no_illegal", label: "No Illegal Activities Certification" },
+                  { value: "compliance", label: "Legal Compliance Agreement" },
+                  { value: "custom", label: "Custom Restrictions" },
                 ]}
                 helperText="Define what assignee must satisfy"
               />
@@ -354,7 +312,6 @@ const DynamicAssignmentByLessorSection = () => {
         </AnimatePresence>
       </div>
 
-      {/* Section 3: Assignee Obligations */}
       <div className="space-y-4 mb-6 p-5 bg-slate-800/50 rounded-xl border border-slate-700">
         <div className="flex items-start justify-between">
           <div>
@@ -362,11 +319,8 @@ const DynamicAssignmentByLessorSection = () => {
               <span className="w-2 h-2 rounded-full bg-gradient-to-r from-amber-500 to-orange-500"></span>
               Assignee Obligations (Optional)
             </h3>
-            <p className="text-sm text-slate-400 mt-1">
-              Duties the new lessor must undertake
-            </p>
+            <p className="text-sm text-slate-400 mt-1">Duties the new lessor must undertake</p>
           </div>
-          
           <CheckboxField
             label=""
             name="enableAssigneeObligation"
@@ -418,7 +372,6 @@ const DynamicAssignmentByLessorSection = () => {
         </AnimatePresence>
       </div>
 
-      {/* Section 4: Post-Assignment Liability */}
       <div className="space-y-4 mb-6 p-5 bg-slate-800/50 rounded-xl border border-slate-700">
         <h3 className="text-lg font-semibold text-white flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-gradient-to-r from-red-500 to-rose-500"></span>
@@ -432,18 +385,9 @@ const DynamicAssignmentByLessorSection = () => {
           onChange={handleChange("postAssignmentLessorLiability")}
           required
           options={[
-            { 
-              value: "no_liability", 
-              label: "No Liability (Complete Release)" 
-            },
-            { 
-              value: "joint_liability", 
-              label: "Joint Liability (Throughout Lease Term)" 
-            },
-            { 
-              value: "limited_liability", 
-              label: "Limited Liability (12 Months Only)" 
-            },
+            { value: "no_liability", label: "No Liability (Complete Release)" },
+            { value: "joint_liability", label: "Joint Liability (Throughout Lease Term)" },
+            { value: "limited_liability", label: "Limited Liability (12 Months Only)" },
           ]}
           helperText="Define whether original lessor remains responsible after assignment"
         />
@@ -461,7 +405,6 @@ const DynamicAssignmentByLessorSection = () => {
         </div>
       </div>
 
-      {/* Live Preview Section */}
       <div className="mt-6 p-5 bg-slate-950/50 border border-slate-700 rounded-xl">
         <div className="flex items-center gap-2 mb-4">
           <CheckCircle className="w-5 h-5 text-green-400" />
@@ -475,37 +418,6 @@ const DynamicAssignmentByLessorSection = () => {
           </p>
         </div>
       </div>
-
-      {/* Summary Info */}
-      <div className="mt-4 p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
-        <div className="flex items-start gap-3">
-          <Info className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-          <div className="text-sm text-blue-200">
-            <p className="font-semibold mb-1">Current Configuration:</p>
-            <ul className="space-y-1 text-xs">
-              <li>✓ Assignment Type: <span className="font-medium">{formData.assignmentClauseType || "Not selected"}</span></li>
-              <li>✓ Restrictions: <span className="font-medium">{formData.enableAssignmentRestrictions ? formData.restrictionType || "Enabled" : "None"}</span></li>
-              <li>✓ Assignee Obligations: <span className="font-medium">{formData.enableAssigneeObligation ? `${(formData.assigneeObligations || []).length} items` : "None"}</span></li>
-              <li>✓ Post-Assignment: <span className="font-medium">{formData.postAssignmentLessorLiability || "Not selected"}</span></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      {/* Warning for Unrestricted Assignment */}
-      {formData.assignmentClauseType === "unrestricted" && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="mt-4 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg flex items-start gap-3"
-        >
-          <AlertTriangle className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" />
-          <div className="text-sm text-yellow-200">
-            <p className="font-semibold">Unrestricted Assignment</p>
-            <p>This gives the lessor maximum flexibility to sell/assign but provides no stability or approval rights to the lessee.</p>
-          </div>
-        </motion.div>
-      )}
     </div>
   );
 };

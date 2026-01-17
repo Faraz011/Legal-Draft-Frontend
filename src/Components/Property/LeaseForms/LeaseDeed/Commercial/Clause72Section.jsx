@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { 
@@ -49,19 +49,14 @@ const DynamicSecurityDepositSection = () => {
       }
     }));
   }, [
-    formData.securityDepositRefundDays,
-    formData.enableSettlementPeriod,
-    formData.settlementClauseType,
-    formData.deductionTypes,
-    formData.customSettlementClause,
-    formData.enableTransferClause,
-    formData.transferClauseType,
-    formData.customTransferClause,
-    formData.transferLiabilityOption
+    generateClause72Preview,
+    generateClause73Preview,
+    dispatch,
+    formType,
+    formData.enableTransferClause
   ]);
 
-  
-  const generateClause72Preview = () => {
+  const generateClause72Preview = useCallback(() => {
     let baseText = "7.2. The security deposit will be returned without interest at the same time as the Lessee delivers possession of the Leased Premises back to the Lessor upon the conclusion of the Lease Period or the earlier termination of this Lease Deed in accordance with the stipulated terms, provided that there are no outstanding dues owed by the Lessee.";
 
     // Deduction clause
@@ -102,10 +97,16 @@ const DynamicSecurityDepositSection = () => {
     }
 
     return baseText + deductionText + settlementText;
-  };
+  }, [
+    formData.settlementClauseType,
+    formData.deductionTypes,
+    formData.customSettlementClause,
+    formData.securityDepositRefundDays,
+    formData.enableSettlementPeriod
+  ]);
 
  
-  const generateClause73Preview = () => {
+  const generateClause73Preview = useCallback(() => {
     if (!formData.enableTransferClause) {
       return null;
     }
@@ -132,7 +133,12 @@ const DynamicSecurityDepositSection = () => {
       default:
         return "[Select transfer clause type]";
     }
-  };
+  }, [
+    formData.enableTransferClause,
+    formData.transferClauseType,
+    formData.transferNoticeDays,
+    formData.customTransferClause
+  ]);
 
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 hover:border-slate-700 transition-all">

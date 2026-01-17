@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
-import { XCircle,Info,CheckCircle,AlertTriangle,Ban} from "lucide-react";
+import { XCircle, Info, CheckCircle, AlertTriangle, Ban } from "lucide-react";
 import NumberField from "../../../../FormComponents/NumberField";
 import TextAreaField from "../../../../FormComponents/TextAreaField";
 import CheckboxField from "../../../../FormComponents/CheckboxField";
@@ -12,29 +12,114 @@ import {
   updateFormBulk
 } from "../../../../../redux/PropertySlices/leaseSlice";
 
-
 const DynamicTerminationSection = () => {
   const dispatch = useDispatch();
   const formType = "deed";
   const formData = useSelector((state) => selectFormData(formType)(state));
-  
+
   const handleChange = (field) => (e) => {
     const value = e.target?.value !== undefined ? e.target.value : e;
     dispatch(updateField({ formType, field, value }));
   };
 
-  
   const showRemedyPeriod = formData.terminationClauseType !== "immediate";
   const showCustomClause = formData.terminationClauseType === "custom";
   const showConsequences = formData.enableTerminationConsequences;
   const showEarlyTermination = formData.enableEarlyTermination;
 
-  
+  const generateEarlyTerminationText = useCallback(() => {
+    if (!formData.enableEarlyTermination) return "";
+
+    const noticeDays = formData.earlyTerminationNotice || "90";
+    const penalty = formData.earlyTerminationPenalty || "3 months rent";
+
+    switch (formData.earlyTerminationType) {
+      case "with_penalty":
+        return `Either party may terminate this lease before the expiration of the Lease Period by providing ${noticeDays} days written notice to the other party and paying a penalty equivalent to ${penalty}.`;
+      case "notice_only":
+        return `Either party may terminate this lease before the expiration of the Lease Period by providing ${noticeDays} days written notice to the other party without any penalty.`;
+      case "lessor_only":
+        return `Only the Lessor may terminate this lease before the expiration of the Lease Period by providing ${noticeDays} days written notice to the Lessee. The Lessee does not have the right to early termination.`;
+      case "after_lockin":
+        const lockInPeriod = formData.earlyTermAfterMonths || "12";
+        return `After completion of ${lockInPeriod} months from the commencement date, either party may terminate this lease by providing ${noticeDays} days written notice to the other party.`;
+      default:
+        return "";
+    }
+  }, [
+    formData.enableEarlyTermination,
+    formData.earlyTerminationNotice,
+    formData.earlyTerminationPenalty,
+    formData.earlyTerminationType,
+    formData.earlyTermAfterMonths
+  ]);
+
+  const generateClause201Preview = useCallback(() => {
+    const days = formData.terminationNoticeDays || "___";
+
+    switch (formData.terminationClauseType) {
+      case "standard":
+        return `The Lessor shall have the right to terminate the lease without notice in the event of a default by the Lessee that is not remedied within ${days} days of receiving a written notice from the Lessor regarding the default.`;
+      case "with_warning":
+        return `The Lessor shall have the right to terminate the lease in the event of a default by the Lessee. The Lessor must first provide a written notice to the Lessee specifying the nature of the default. If the Lessee fails to remedy the default within ${days} days of receiving such notice, the Lessor may proceed with termination by serving a final termination notice.`;
+      case "escalation":
+        const firstWarning = formData.firstWarningDays || "7";
+        return `The Lessor shall have the right to terminate the lease through the following escalation process: (a) First Warning - Written notice to remedy default within ${firstWarning} days; (b) Second Warning - If not remedied, additional ${days} days to cure the breach; (c) Termination - If still not remedied, the Lessor may terminate the lease without further notice.`;
+      case "immediate":
+        return `The Lessor shall have the right to terminate the lease immediately without prior notice in the event of any material default by the Lessee, including but not limited to non-payment of rent for 2 consecutive months, illegal use of premises, or causing significant damage to the property.`;
+      case "mutual_agreement":
+        return `This lease may be terminated by mutual written agreement of both parties at any time. In case of unilateral termination by the Lessor due to Lessee's default, the Lessor must provide written notice to the Lessee. If the default is not remedied within ${days} days, the Lessor may terminate the lease.`;
+      case "custom":
+        return formData.customTerminationClause
+          ? `${formData.customTerminationClause}`
+          : "[Your custom termination clause will appear here]";
+      default:
+        return "[Select termination type]";
+    }
+  }, [
+    formData.terminationNoticeDays,
+    formData.terminationClauseType,
+    formData.customTerminationClause,
+    formData.firstWarningDays
+  ]);
+
+  const generateClause202Preview = useCallback(() => {
+    let baseText = "Upon any termination of the Lease for any reason, the Lessee shall return physical vacant possession of the scheduled property to the Lessor";
+
+    if (formData.possessionReturnDays) {
+      baseText += ` within ${formData.possessionReturnDays} days of termination notice`;
+    }
+
+    baseText += ", concurrently with the Lessor refunding the Security Deposit to the Lessee after deducting all amounts due and payable by the Lessee under this Lease Deed";
+
+    if (formData.enableTerminationConsequences) {
+      const consequences = formData.terminationConsequences || [];
+      if (consequences.length > 0) {
+        baseText += ". Additionally, upon termination: " + consequences.join("; ");
+      }
+    }
+
+    baseText += ".";
+
+    if (formData.enableEarlyTermination) {
+      const earlyTermText = generateEarlyTerminationText();
+      baseText += ` ${earlyTermText}`;
+    }
+
+    return baseText;
+  }, [
+    formData.possessionReturnDays,
+    formData.enableTerminationConsequences,
+    formData.terminationConsequences,
+    formData.enableEarlyTermination,
+    generateEarlyTerminationText
+  ]);
+
   useEffect(() => {
     const clause201 = generateClause201Preview();
     const clause202 = generateClause202Preview();
-    
-    dispatch(updateFormBulk({ 
+
+    dispatch(updateFormBulk({
       formType,
       data: {
         terminationClause201: clause201,
@@ -44,105 +129,11 @@ const DynamicTerminationSection = () => {
       }
     }));
   }, [
-    formData.terminationNoticeDays,
-    formData.terminationClauseType,
-    formData.customTerminationClause,
-    formData.enableTerminationConsequences,
-    formData.terminationConsequences,
-    formData.enableEarlyTermination,
-    formData.earlyTerminationPenalty,
-    formData.earlyTerminationNotice,
+    generateClause201Preview,
+    generateClause202Preview,
     dispatch,
     formType
   ]);
-
-
-  const generateClause201Preview = () => {
-    const days = formData.terminationNoticeDays || "___";
-    
-    switch (formData.terminationClauseType) {
-      case "standard":
-        return `The Lessor shall have the right to terminate the lease without notice in the event of a default by the Lessee that is not remedied within ${days} days of receiving a written notice from the Lessor regarding the default.`;
-      
-      case "with_warning":
-        return `The Lessor shall have the right to terminate the lease in the event of a default by the Lessee. The Lessor must first provide a written notice to the Lessee specifying the nature of the default. If the Lessee fails to remedy the default within ${days} days of receiving such notice, the Lessor may proceed with termination by serving a final termination notice.`;
-      
-      case "escalation":
-        const firstWarning = formData.firstWarningDays || "7";
-        return `The Lessor shall have the right to terminate the lease through the following escalation process: (a) First Warning - Written notice to remedy default within ${firstWarning} days; (b) Second Warning - If not remedied, additional ${days} days to cure the breach; (c) Termination - If still not remedied, the Lessor may terminate the lease without further notice.`;
-      
-      case "immediate":
-        return `The Lessor shall have the right to terminate the lease immediately without prior notice in the event of any material default by the Lessee, including but not limited to non-payment of rent for 2 consecutive months, illegal use of premises, or causing significant damage to the property.`;
-      
-      case "mutual_agreement":
-        return `This lease may be terminated by mutual written agreement of both parties at any time. In case of unilateral termination by the Lessor due to Lessee's default, the Lessor must provide written notice to the Lessee. If the default is not remedied within ${days} days, the Lessor may terminate the lease.`;
-      
-      case "custom":
-        return formData.customTerminationClause 
-          ? `${formData.customTerminationClause}` 
-          : "[Your custom termination clause will appear here]";
-      
-      default:
-        return "[Select termination type]";
-    }
-  };
-
-  
-  const generateClause202Preview = () => {
-    let baseText = "Upon any termination of the Lease for any reason, the Lessee shall return physical vacant possession of the scheduled property to the Lessor";
-    
-   
-    if (formData.possessionReturnDays) {
-      baseText += ` within ${formData.possessionReturnDays} days of termination notice`;
-    }
-    
-    
-    baseText += ", concurrently with the Lessor refunding the Security Deposit to the Lessee after deducting all amounts due and payable by the Lessee under this Lease Deed";
-    
-    
-    if (formData.enableTerminationConsequences) {
-      const consequences = formData.terminationConsequences || [];
-      if (consequences.length > 0) {
-        baseText += ". Additionally, upon termination: " + consequences.join("; ");
-      }
-    }
-    
-    baseText += ".";
-    
-    
-    if (formData.enableEarlyTermination) {
-      const earlyTermText = generateEarlyTerminationText();
-      baseText += ` ${earlyTermText}`;
-    }
-    
-    return baseText;
-  };
-
-  
-  const generateEarlyTerminationText = () => {
-    if (!formData.enableEarlyTermination) return "";
-    
-    const noticeDays = formData.earlyTerminationNotice || "90";
-    const penalty = formData.earlyTerminationPenalty || "3 months rent";
-    
-    switch (formData.earlyTerminationType) {
-      case "with_penalty":
-        return `Either party may terminate this lease before the expiration of the Lease Period by providing ${noticeDays} days written notice to the other party and paying a penalty equivalent to ${penalty}.`;
-      
-      case "notice_only":
-        return `Either party may terminate this lease before the expiration of the Lease Period by providing ${noticeDays} days written notice to the other party without any penalty.`;
-      
-      case "lessor_only":
-        return `Only the Lessor may terminate this lease before the expiration of the Lease Period by providing ${noticeDays} days written notice to the Lessee. The Lessee does not have the right to early termination.`;
-      
-      case "after_lockin":
-        const lockInPeriod = formData.earlyTermAfterMonths || "12";
-        return `After completion of ${lockInPeriod} months from the commencement date, either party may terminate this lease by providing ${noticeDays} days written notice to the other party.`;
-      
-      default:
-        return "";
-    }
-  };
 
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 hover:border-slate-700 transition-all">
@@ -164,7 +155,6 @@ const DynamicTerminationSection = () => {
         </div>
       </div>
 
-      
       <div className="space-y-4 mb-6 p-5 bg-slate-800/50 rounded-xl border border-slate-700">
         <h3 className="text-lg font-semibold text-white flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-gradient-to-r from-red-500 to-rose-500"></span>
@@ -178,35 +168,16 @@ const DynamicTerminationSection = () => {
           onChange={handleChange("terminationClauseType")}
           required
           options={[
-            { 
-              value: "standard", 
-              label: "Standard Notice Period (Most Common)" 
-            },
-            { 
-              value: "with_warning", 
-              label: "Two-Step Warning Process" 
-            },
-            { 
-              value: "escalation", 
-              label: "Three-Step Escalation Process" 
-            },
-            { 
-              value: "immediate", 
-              label: "Immediate Termination (No Notice)" 
-            },
-            { 
-              value: "mutual_agreement", 
-              label: "Mutual Agreement with Default Clause" 
-            },
-            { 
-              value: "custom", 
-              label: "Custom Termination Clause" 
-            },
+            { value: "standard", label: "Standard Notice Period (Most Common)" },
+            { value: "with_warning", label: "Two-Step Warning Process" },
+            { value: "escalation", label: "Three-Step Escalation Process" },
+            { value: "immediate", label: "Immediate Termination (No Notice)" },
+            { value: "mutual_agreement", label: "Mutual Agreement with Default Clause" },
+            { value: "custom", label: "Custom Termination Clause" },
           ]}
           helperText="Define how lessor can terminate lease upon default"
         />
 
-        
         <AnimatePresence>
           {showRemedyPeriod && (
             <motion.div
@@ -277,7 +248,6 @@ const DynamicTerminationSection = () => {
         </AnimatePresence>
       </div>
 
-      
       <div className="space-y-4 mb-6 p-5 bg-slate-800/50 rounded-xl border border-slate-700">
         <h3 className="text-lg font-semibold text-white flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-gradient-to-r from-amber-500 to-orange-500"></span>
@@ -294,7 +264,6 @@ const DynamicTerminationSection = () => {
           helperText="Leave blank for immediate possession. Specify days if grace period needed."
         />
 
-        
         <div className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
           <div>
             <label className="text-white text-sm font-medium">Add Termination Consequences?</label>
@@ -353,7 +322,6 @@ const DynamicTerminationSection = () => {
         </AnimatePresence>
       </div>
 
-      
       <div className="space-y-4 mb-6 p-5 bg-slate-800/50 rounded-xl border border-slate-700">
         <div className="flex items-start justify-between">
           <div>
@@ -365,7 +333,6 @@ const DynamicTerminationSection = () => {
               Allow termination before lease expiry with notice/penalty
             </p>
           </div>
-          
           <CheckboxField
             label=""
             name="enableEarlyTermination"
@@ -389,22 +356,10 @@ const DynamicTerminationSection = () => {
                 onChange={handleChange("earlyTerminationType")}
                 required
                 options={[
-                  { 
-                    value: "with_penalty", 
-                    label: "With Notice Period + Penalty" 
-                  },
-                  { 
-                    value: "notice_only", 
-                    label: "With Notice Period Only (No Penalty)" 
-                  },
-                  { 
-                    value: "lessor_only", 
-                    label: "Lessor Only (Lessee Cannot Terminate Early)" 
-                  },
-                  { 
-                    value: "after_lockin", 
-                    label: "After Lock-in Period" 
-                  },
+                  { value: "with_penalty", label: "With Notice Period + Penalty" },
+                  { value: "notice_only", label: "With Notice Period Only (No Penalty)" },
+                  { value: "lessor_only", label: "Lessor Only (Lessee Cannot Terminate Early)" },
+                  { value: "after_lockin", label: "After Lock-in Period" },
                 ]}
                 helperText="Define conditions for early termination"
               />
@@ -462,7 +417,6 @@ const DynamicTerminationSection = () => {
         </AnimatePresence>
       </div>
 
-      
       <div className="mt-6 p-5 bg-slate-950/50 border border-slate-700 rounded-xl">
         <div className="flex items-center gap-2 mb-4">
           <CheckCircle className="w-5 h-5 text-green-400" />
@@ -470,7 +424,6 @@ const DynamicTerminationSection = () => {
         </div>
         
         <div className="space-y-4">
-          
           <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
             <p className="text-xs text-slate-400 mb-2 font-mono">CLAUSE 20.1 - TERMINATION BY LESSOR</p>
             <p className="text-sm text-slate-200 leading-relaxed whitespace-pre-wrap">
@@ -478,28 +431,11 @@ const DynamicTerminationSection = () => {
             </p>
           </div>
 
-          
           <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
             <p className="text-xs text-slate-400 mb-2 font-mono">CLAUSE 20.2 - POST-TERMINATION</p>
             <p className="text-sm text-slate-200 leading-relaxed whitespace-pre-wrap">
               {generateClause202Preview()}
             </p>
-          </div>
-        </div>
-      </div>
-
-      
-      <div className="mt-4 p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
-        <div className="flex items-start gap-3">
-          <Info className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-          <div className="text-sm text-blue-200">
-            <p className="font-semibold mb-1">Current Configuration:</p>
-            <ul className="space-y-1 text-xs">
-              <li>✓ Termination Type: <span className="font-medium">{formData.terminationClauseType || "Not selected"}</span></li>
-              <li>✓ Remedy Period: <span className="font-medium">{formData.terminationNoticeDays || "___"} days</span></li>
-              <li>✓ Early Termination: <span className="font-medium">{formData.enableEarlyTermination ? formData.earlyTerminationType || "Enabled" : "Disabled"}</span></li>
-              <li>✓ Consequences: <span className="font-medium">{formData.enableTerminationConsequences ? `${(formData.terminationConsequences || []).length} items` : "None"}</span></li>
-            </ul>
           </div>
         </div>
       </div>
