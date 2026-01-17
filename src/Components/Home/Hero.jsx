@@ -7,7 +7,6 @@ import MagicBentoMobile from "./MagicBentoMobile";
 
 const Hero = () => {
   const [displayText, setDisplayText] = useState('');
-  const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const [isTyping, setIsTyping] = useState(true);
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
   
@@ -44,7 +43,7 @@ const Hero = () => {
     }
 
     return () => clearTimeout(timeout);
-  }, [displayText, isTyping, currentPhraseIndex]);
+  }, [displayText, isTyping, currentPhraseIndex, phrases]);
 
   return (
     <section className="relative w-full z-20 min-h-[85vh] sm:min-h-[90vh] flex items-center py-8 mt-16 sm:py-12 md:py-16 lg:py-20 xl:py-24">

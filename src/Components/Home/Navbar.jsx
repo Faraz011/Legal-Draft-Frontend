@@ -48,18 +48,6 @@ const Navbar = () => {
     
   ];
 
-  const menuVariants = {
-    hidden: { opacity: 0, y: -20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        staggerChildren: 0.05,
-      },
-    },
-    exit: { opacity: 0, y: -20 },
-  };
-
   const menuItemVariants = {
     hidden: { opacity: 0, x: -20 },
     visible: { opacity: 1, x: 0 },
