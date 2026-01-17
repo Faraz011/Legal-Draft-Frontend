@@ -17,7 +17,7 @@ import {
   selectFormData,
   updateField,
   updateFormBulk
-} from "../../../../../redux/PropertySlices/LeaseSlice";
+} from "../../../../../redux/PropertySlices/leaseSlice";
 
 /**
  * Dynamic Right to Mortgage Clause Component

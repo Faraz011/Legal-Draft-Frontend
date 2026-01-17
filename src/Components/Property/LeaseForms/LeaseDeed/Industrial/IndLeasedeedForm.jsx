@@ -37,7 +37,7 @@ import {
   updateFormBulk,
   initializeForm,
   submitLease,
-} from "../../../../../redux/PropertySlices/LeaseSlice";
+} from "../../../../../redux/PropertySlices/leaseSlice";
 
 
 const IndustrialLeaseDeedForm = () => {

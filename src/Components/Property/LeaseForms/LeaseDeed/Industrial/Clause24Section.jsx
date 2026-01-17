@@ -10,7 +10,7 @@ import {
   selectFormData,
   updateField,
   updateFormBulk
-} from "../../../../../redux/PropertySlices/LeaseSlice";
+} from "../../../../../redux/PropertySlices/leaseSlice";
 
 
 const DynamicCounterpartsSection = ({ formType, formData, handleChange }) => {

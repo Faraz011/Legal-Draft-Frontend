@@ -18,7 +18,7 @@ import SectionWrapper from "../../FormComponents/SectionWrapper";
 import SelectField from "../../FormComponents/SelectField";
 import LeasePreview from "../../FormComponents/LeasePreview";
 import { useDispatch } from "react-redux";
-import { updateFormBulk } from "../../../redux/PropertySlices/LeaseSlice";
+import { updateFormBulk } from "../../../redux/PropertySlices/leaseSlice";
 
 const CommercialLeaseForm = ({ formType }) => {
   const [formData, setFormData] = useState({
