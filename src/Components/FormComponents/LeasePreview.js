@@ -1,5 +1,5 @@
 // LeasePreview.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "../CSS/LeasePreview.css";
 import LeaseLoader from "../FormComponents/LoaderComponent";
 import DownloadButton from "../FormComponents/DownloadButton";
