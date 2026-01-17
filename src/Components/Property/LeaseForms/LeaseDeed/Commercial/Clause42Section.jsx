@@ -13,7 +13,6 @@ import CheckboxField from "../../../../FormComponents/CheckboxField";
 
 
 const DynamicDefaultClauseSection = ({ formType, formData, handleChange }) => {
-  const dispatch = useDispatch();
   
   const showLateFeeFields = formData.defaultPenaltyType === "late_fee_penalty" || 
                             formData.defaultPenaltyType === "multiple_penalties";
@@ -24,21 +23,6 @@ const DynamicDefaultClauseSection = ({ formType, formData, handleChange }) => {
   const showCustomField = formData.defaultPenaltyType === "custom";
   
   const showRemedyFields = formData.enableRemedyPeriod;
-
-  // Update form data with generated clauses whenever they change
-  useEffect(() => {
-    const clause43 = generateClause43Preview();
-    const clause44 = formData.enableRemedyPeriod ? generateClause44Preview() : '';
-    
-     handleChange('clause43')(clause43);
-  handleChange('clause44')(clause44);
-}, [
-    generateClause43Preview,
-    generateClause44Preview,
-    handleChange,
-    formData.enableRemedyPeriod
-  ]);
-
 
   const generateClause43Preview = useCallback(() => {
     const months = formData.defaultConsecutiveMonths || "___";
@@ -137,6 +121,20 @@ const DynamicDefaultClauseSection = ({ formType, formData, handleChange }) => {
     formData.noticePeriodDays,
     formData.remedyPeriodAction,
     formData.customRemedyClause
+  ]);
+
+  // Update form data with generated clauses whenever they change
+  useEffect(() => {
+    const clause43 = generateClause43Preview();
+    const clause44 = formData.enableRemedyPeriod ? generateClause44Preview() : '';
+    
+     handleChange('clause43')(clause43);
+  handleChange('clause44')(clause44);
+}, [
+    generateClause43Preview,
+    generateClause44Preview,
+    handleChange,
+    formData.enableRemedyPeriod
   ]);
 
   return (

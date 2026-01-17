@@ -6,7 +6,6 @@ import {
   Info,
   CheckCircle,
   AlertTriangle,
-  Shield,
   Lock
 } from "lucide-react";
 import NumberField from "../../../../FormComponents/NumberField";
@@ -33,29 +32,12 @@ const DynamicRightToMortgageSection = () => {
     dispatch(updateField({ formType, field, value }));
   };
 
-  // Helper to show/hide conditional fields
   const showLesseeLien = formData.mortgageClauseType === "lessee_notice";
   const showMortgageConsent = formData.mortgageClauseType === "mortgagor_consent";
   const showRestrictions = formData.enableMortgageRestrictions;
   const showCustomClause = formData.mortgageClauseType === "custom";
   const showLienProtection = formData.enableLienProtection;
   const showPriorityRights = formData.enablePriorityRights;
-
-  useEffect(() => {
-    const clause26 = generateClause26Preview();
-    
-    dispatch(updateFormBulk({ 
-      formType,
-      data: {
-        mortgageClause26: clause26,
-        clause26: clause26
-      }
-    }));
-  }, [
-    generateClause26Preview,
-    dispatch,
-    formType
-  ]);
 
   const generateClause26Preview = useCallback(() => {
     let baseText = "";
@@ -166,6 +148,22 @@ const DynamicRightToMortgageSection = () => {
     formData.enablePriorityRights,
     formData.priorityRightsType,
     formData.maxMortgageLTV
+  ]);
+
+  useEffect(() => {
+    const clause26 = generateClause26Preview();
+    
+    dispatch(updateFormBulk({ 
+      formType,
+      data: {
+        mortgageClause26: clause26,
+        clause26: clause26
+      }
+    }));
+  }, [
+    generateClause26Preview,
+    dispatch,
+    formType
   ]);
 
   return (

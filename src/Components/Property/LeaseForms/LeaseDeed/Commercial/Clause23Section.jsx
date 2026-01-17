@@ -6,7 +6,6 @@ import {
   Info,
   CheckCircle,
   AlertTriangle,
-  Lock,
   Users
 } from "lucide-react";
 import NumberField from "../../../../FormComponents/NumberField";
@@ -119,6 +118,8 @@ const DynamicAssignmentByLessorSection = () => {
         
         case "limited_liability":
           baseText += " The original Lessor shall remain liable for the obligations of the new lessor for a period of 12 months from the date of assignment or until the expiry of the lease, whichever is earlier.";
+          break;
+        default:
           break;
       }
     }

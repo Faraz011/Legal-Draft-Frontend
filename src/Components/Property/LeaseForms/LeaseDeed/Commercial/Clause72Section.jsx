@@ -34,28 +34,6 @@ const DynamicSecurityDepositSection = () => {
   const showCustomSettlement = formData.settlementClauseType === "custom";
   const showCustomTransfer = formData.transferClauseType === "custom";
 
-  // Update form data with generated clauses whenever they change
-  useEffect(() => {
-    const clause72 = generateClause72Preview();
-    const clause73 = formData.enableTransferClause ? generateClause73Preview() : '';
-    
-    dispatch(updateFormBulk({ 
-      formType,
-      data: {
-        securityDepositClause72: clause72,
-        securityDepositClause73: clause73,
-        clause72: clause72, 
-        clause73: clause73  
-      }
-    }));
-  }, [
-    generateClause72Preview,
-    generateClause73Preview,
-    dispatch,
-    formType,
-    formData.enableTransferClause
-  ]);
-
   const generateClause72Preview = useCallback(() => {
     let baseText = "7.2. The security deposit will be returned without interest at the same time as the Lessee delivers possession of the Leased Premises back to the Lessor upon the conclusion of the Lease Period or the earlier termination of this Lease Deed in accordance with the stipulated terms, provided that there are no outstanding dues owed by the Lessee.";
 
@@ -105,7 +83,7 @@ const DynamicSecurityDepositSection = () => {
     formData.enableSettlementPeriod
   ]);
 
- 
+
   const generateClause73Preview = useCallback(() => {
     if (!formData.enableTransferClause) {
       return null;
@@ -138,6 +116,28 @@ const DynamicSecurityDepositSection = () => {
     formData.transferClauseType,
     formData.transferNoticeDays,
     formData.customTransferClause
+  ]);
+
+  // Update form data with generated clauses whenever they change
+  useEffect(() => {
+    const clause72 = generateClause72Preview();
+    const clause73 = formData.enableTransferClause ? generateClause73Preview() : '';
+    
+    dispatch(updateFormBulk({ 
+      formType,
+      data: {
+        securityDepositClause72: clause72,
+        securityDepositClause73: clause73,
+        clause72: clause72, 
+        clause73: clause73  
+      }
+    }));
+  }, [
+    generateClause72Preview,
+    generateClause73Preview,
+    dispatch,
+    formType,
+    formData.enableTransferClause
   ]);
 
   return (
