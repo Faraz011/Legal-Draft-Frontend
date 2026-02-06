@@ -9,6 +9,7 @@ import "../../CSS/RentalLease.css";
 import LeasePreview from "../../FormComponents/LeasePreview"
 import { useDispatch } from "react-redux";
 import { updateFormBulk } from "../../../redux/PropertySlices/leaseSlice";
+import AutoFillButton from "../../FormComponents/AutoFillButton";
 const LeaseAgreementForm = ({formType}) => {
   const [formData, setFormData] = useState({
     place: "",
@@ -45,6 +46,35 @@ const LeaseAgreementForm = ({formType}) => {
     courtCity: "",
   });
 
+  const demoData = {
+    place: "Mumbai",
+    agreementDate: "2024-08-15",
+    ownerName: "Vijay Mhatre",
+    ownerFatherName: "Ganesh Mhatre",
+    ownerAddress: "B-405, Shivneri Society, Dadar East, Mumbai - 400014",
+    tenantName: "Rohan Khanna",
+    tenantFatherName: "Manish Khanna",
+    tenantWorkAddress: "TCS, Empire Tower, Airoli, Navi Mumbai",
+    tenantAddress: "C-12, Sector 17, Vashi, Navi Mumbai - 400703",
+    propertyAddress: "Flat 202, 2nd Floor, Sai Dham, Andheri West, Mumbai - 400053",
+    bedrooms: "2",
+    fans: "4",
+    cflLights: "6",
+    geysers: "2",
+    mirrors: "3",
+    startDate: "2024-09-01",
+    expiryDate: "2025-08-31",
+    rentAmount: "35000",
+    maintenanceAmount: "4500",
+    securityDeposit: "100000",
+    paymentMethod: "UPI",
+    witness1Name: "Sandeep More",
+    witness1Address: "A-101, Om Sai, Andheri West, Mumbai",
+    witness2Name: "Deepali Kadam",
+    witness2Address: "B-202, Om Sai, Andheri West, Mumbai",
+    courtCity: "Mumbai",
+  };
+
   const handleChange = (field) => (e) => {
     setFormData({ ...formData, [field]: e.target.value });
   };
@@ -65,6 +95,11 @@ const LeaseAgreementForm = ({formType}) => {
   return (
     <form className="lease-agreement-form" onSubmit={handlePreview}>
       <div className="form-header"> Rental Lease Agreement</div>
+
+      <AutoFillButton 
+        onFill={(data) => setFormData(data)} 
+        demoData={demoData} 
+      />
 
       {/* Agreement Info */}
       <SectionWrapper title="Agreement Information">

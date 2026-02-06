@@ -18,7 +18,9 @@ import {
   selectFormData,
   updateField,
   initializeForm,
+  updateFormBulk,
 } from "../../../../../redux/PropertySlices/leaseSlice";
+import AutoFillButton from "../../../../FormComponents/AutoFillButton";
 
 // Default form data
 const defaultFormData = {
@@ -57,6 +59,12 @@ const defaultFormData = {
   // Dynamic clauses
   clause43: "",
   clause44: "",
+  defaultPenaltyType: "late_fee_penalty",
+  enableRemedyPeriod: false,
+  lateFeeAmount: "",
+  lateFeeGracePeriod: "",
+  remedyPeriodDays: "",
+  customPenaltyClause: "",
 
   // Lease Term
   leaseStartDate: "",
@@ -126,6 +134,65 @@ const defaultFormData = {
   witness2Address: "",
 };
 
+const demoData = {
+  agreementPlace: "Mumbai",
+  agreementDate: "2024-07-15",
+  lessorName: "Rajesh Khanna",
+  lessorFatherName: "Late Vinod Khanna",
+  lessorResidentAddress: "123, Marine Drive, Mumbai - 400020",
+  lessorAadharNo: "1234-5678-9012",
+  lessorPanCardNo: "ABCDE1234F",
+  lesseeName: "Amitabh Bachchan",
+  lesseeFatherName: "Late Harivansh Rai Bachchan",
+  lesseeResidentAddress: "456, Juhu Scheme, Mumbai - 400049",
+  lesseeAadharNo: "9876-5432-1098",
+  lesseePanCardNo: "FGHIJ5678K",
+  propertyMunicipalNo: "B-204",
+  propertySituatedAt: "Palm Beach Road, Navi Mumbai",
+  leasePurpose: "Operational office for a software company",
+  rentAmount: "75000",
+  rentPaymentDay: "5",
+  latePaymentInterestRate: "12",
+  annualRentIncreasePercent: "7",
+  rentIncreaseNoticeDays: "30",
+  defaultPenaltyType: "late_fee_penalty",
+  enableRemedyPeriod: true,
+  lateFeeAmount: "500",
+  lateFeeGracePeriod: "5",
+  remedyPeriodDays: "10",
+  leaseStartDate: "2024-08-01",
+  leaseEndDate: "2027-07-31",
+  renewalNoticeMonths: "3",
+  securityDepositAmount: "225000",
+  lockInPeriodStartDate: "2024-08-01",
+  lockInDurationYears: "1",
+  maintenanceFeesAmount: "5000",
+  maintenanceFrequency: "monthly",
+  majorRepairReimbursementDays: "15",
+  inspectionNoticeHours: "24",
+  fixturesAndFittingsList: "Air conditioners, light fixtures, modular furniture, cafeteria equipment",
+  defaultRemedyDays: "15",
+  governingLawState: "Maharashtra",
+  courtJurisdiction: "Mumbai",
+  noticeLanguage: "English",
+  buildingNo: "Plaza 5",
+  propertyAreaSqMtrs: "120",
+  registrationDistrict: "Mumbai Suburban",
+  subDivisionTaluka: "Andheri",
+  corporationLimits: "MCGM",
+  plotNo: "22",
+  surveyNo: "101/A",
+  boundaryEast: "Service Road",
+  boundarySouth: "Building 4",
+  boundaryWest: "Main Road",
+  boundaryNorth: "Open Park",
+  furnitureFixturesDescription: "Complete office workstations, server rack, 5 AC units",
+  witness1Name: "Sachin Tendulkar",
+  witness1Address: "Bandra West, Mumbai",
+  witness2Name: "Rahul Dravid",
+  witness2Address: "Indiranagar, Bangalore"
+};
+
 
 const LeasedeedForm = () => {
   const dispatch = useDispatch();
@@ -155,6 +222,10 @@ const LeasedeedForm = () => {
   const handlePreview = (e) => {
     e.preventDefault();
     setPreviewMode(true);
+  };
+
+  const handleFill = (data) => {
+    dispatch(updateFormBulk({ formType, data }));
   };
 
 
@@ -210,6 +281,13 @@ const LeasedeedForm = () => {
                 className={`h-1.5 w-8 rounded-full bg-gradient-to-r ${section.gradient} opacity-30`}
               />
             ))}
+          </div>
+          
+          <div className="flex justify-center mt-6">
+            <AutoFillButton 
+              onFill={handleFill} 
+              demoData={demoData} 
+            />
           </div>
         </motion.div>
 
@@ -467,7 +545,11 @@ const LeasedeedForm = () => {
                 />
               </div>
 
-              <DynamicDefaultClauseSection />
+              <DynamicDefaultClauseSection 
+                formType={formType}
+                formData={formData}
+                handleChange={handleChange}
+              />
 
               <div className="p-4 bg-slate-800 rounded-lg border border-slate-700">
                 <h4 className="text-white font-semibold mb-3">Annual Rent Revision</h4>
@@ -755,7 +837,11 @@ const LeasedeedForm = () => {
             </div>
             <div className="space-y-4">
               <div className="grid grid-cols-1 gap-4">
-                <DynamicCounterpartsSection />
+                <DynamicCounterpartsSection 
+                  formType={formType}
+                  formData={formData}
+                  handleChange={handleChange}
+                />
                 
               </div>
             </div>

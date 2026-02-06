@@ -18,6 +18,7 @@ import SelectField from "../../FormComponents/SelectField";
 import LeasePreview from "../../FormComponents/LeasePreview";
 import { useDispatch } from "react-redux";
 import { updateFormBulk } from "../../../redux/PropertySlices/leaseSlice";
+import AutoFillButton from "../../FormComponents/AutoFillButton";
 
 const CommercialLeaseForm = ({ formType }) => {
   const [formData, setFormData] = useState({
@@ -63,6 +64,50 @@ const CommercialLeaseForm = ({ formType }) => {
     witness2Name: "",
     witness2Details: "",
   });
+
+  const demoData = {
+    agreementDay: "15",
+    agreementMonth: "August",
+    agreementYear: "2024",
+    agreementPlace: "Mumbai",
+    lessorName: "Rajesh Kumar",
+    lessorFatherName: "Suresh Kumar",
+    lessorResidentAddress: "123, Ocean View Apartments, Marine Drive, Mumbai - 400001",
+    lesseeName: "Modern Tech Solutions Pvt Ltd",
+    lesseeFatherName: "Represented by Rahul Sharma",
+    lesseeResidentAddress: "456, Business Hub, BKC, Mumbai - 400051",
+    buildingMunicipalNo: "8899",
+    demisedPremisesAddress: "Unit 402, 4th Floor, Pinnacle Tower, Andheri East, Mumbai",
+    demisedPremisesfulldescription: "Spacious commercial office space with central AC and parking spot",
+    leaseTermYears: "5",
+    leaseCommencementDate: "2024-09-01",
+    leaseDeterminationDate: "2029-08-31",
+    rentFrequency: "monthly",
+    rentAmount: "75000",
+    rentPayableByDayOfMonth: "5",
+    securityDeposit: "225000",
+    advanceRent: "75000",
+    advanceRentAdjustment: "To be adjusted in the first month",
+    minorRepairsCapPerYear: "10000",
+    restrictions: "No heavy machinery allowed, office use only",
+    scheduleIbuildingNo: "B-2",
+    scheduleIareaSqMtrs: "1200",
+    scheduleIdistrict: "Mumbai Suburban",
+    scheduleIsubDivision: "Andheri",
+    scheduleItaluka: "Andheri",
+    scheduleIcorporationLimits: "MCGM",
+    scheduleIplotNo: "P-45",
+    scheduleIsurveyNo: "S-12",
+    boundaryEast: "Main Road",
+    boundarySouth: "Service Lane",
+    boundaryWest: "Building B-1",
+    boundaryNorth: "Open Space",
+    scheduleIIFurnitureFixtures: "4 AC Units, 12 Workstations, 1 Meeting Table, 8 Chairs",
+    witness1Name: "Amit Singh",
+    witness1Details: "A-12, Green Park, Mumbai",
+    witness2Name: "Priya Varma",
+    witness2Details: "B-5, Silver Sands, Mumbai",
+  };
 
   const handleChange = (field) => (e) => {
     setFormData({ ...formData, [field]: e.target.value });
@@ -147,6 +192,11 @@ const CommercialLeaseForm = ({ formType }) => {
             ))}
           </div>
         </motion.div>
+
+        <AutoFillButton 
+          onFill={(data) => setFormData(data)} 
+          demoData={demoData} 
+        />
 
         {/* Form */}
         <motion.form

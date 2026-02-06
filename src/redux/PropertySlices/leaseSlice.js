@@ -70,13 +70,17 @@ const leasesSlice = createSlice({
     // Update multiple fields at once
     updateFormBulk: (state, action) => {
       const { formType, data } = action.payload;
-      if (state.forms[formType]) {
-        state.forms[formType].formData = {
-          ...state.forms[formType].formData,
-          ...data
+      if (!state.forms[formType]) {
+        state.forms[formType] = {
+          ...initialFormState,
+          formData: {}
         };
-        state.forms[formType].isDirty = true;
       }
+      state.forms[formType].formData = {
+        ...state.forms[formType].formData,
+        ...data
+      };
+      state.forms[formType].isDirty = true;
     },
     // Reset a specific form or all forms
     resetForm: (state, action) => {

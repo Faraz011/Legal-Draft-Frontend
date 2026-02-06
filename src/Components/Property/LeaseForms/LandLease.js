@@ -8,6 +8,7 @@ import LeasePreview from "../../FormComponents/LeasePreview";
 import "../../CSS/LandLease.css";
 import { useDispatch } from "react-redux";
 import { updateFormBulk } from "../../../redux/PropertySlices/leaseSlice";
+import AutoFillButton from "../../FormComponents/AutoFillButton";
 
 const LandLease = ({ formType }) => {
   const [formData, setFormData] = useState({
@@ -61,6 +62,44 @@ const LandLease = ({ formType }) => {
     witness2Details: "",
   });
 
+  const demoData = {
+    agreementDay: "20",
+    agreementMonth: "September",
+    agreementYear: "2024",
+    agreementPlace: "Nashik",
+    ownerName: "Eknath Shinde",
+    ownerAge: "52",
+    ownerOccupation: "Farmer",
+    ownerAddress: "Gat No 405, Village Pimpalgaon, Taluka Niphad, Nashik - 422303",
+    ownerPan: "ABCDE1234P",
+    tenantName: "Green Harvest Agri Solutions",
+    tenantAge: "35",
+    tenantOccupation: "Business",
+    tenantAddress: "Plot 12, MIDC Ambad, Nashik - 422010",
+    tenantPan: "FGHIJ5678Q",
+    plotNo: "P-88",
+    surveyNo: "S-202",
+    area: "5000",
+    ctsNo: "9988",
+    municipalCorp: "Nashik Municipal Corporation",
+    taluka: "Niphad",
+    leaseDuration: "10",
+    premiumAmount: "500000",
+    premiumChequeNo: "123456",
+    premiumBank: "HDFC Bank",
+    premiumDate: "2024-08-20",
+    leaseRent: "15000",
+    dueDate: "2024-09-05",
+    east: "River bank",
+    west: "Survey No 201",
+    north: "Highway 3",
+    south: "Survey No 203",
+    witness1Name: "Vinod Khanna",
+    witness1Details: "Shivaji Nagar, Nashik",
+    witness2Name: "Rekha Ganesan",
+    witness2Details: "Indira Nagar, Nashik",
+  };
+
   const handleChange = (field) => (e) => {
     setFormData({ ...formData, [field]: e.target.value });
   };
@@ -83,6 +122,11 @@ const LandLease = ({ formType }) => {
   return (
     <form className="lease-land-form" onSubmit={handlePreview}>
       <div className="form-header"> Land Lease Agreement</div>
+
+      <AutoFillButton 
+        onFill={(data) => setFormData(data)} 
+        demoData={demoData} 
+      />
 
       {/* Agreement Details */}
       <SectionWrapper title="Agreement Details">

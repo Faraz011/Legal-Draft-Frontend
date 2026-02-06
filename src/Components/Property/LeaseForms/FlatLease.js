@@ -8,6 +8,7 @@ import LeasePreview from "../../FormComponents/LeasePreview";
 import "../../CSS/FaltLease.css";
 import { useDispatch } from "react-redux";
 import { updateFormBulk } from "../../../redux/PropertySlices/leaseSlice";
+import AutoFillButton from "../../FormComponents/AutoFillButton";
 
 const FlatLeaseForm = ({ formType }) => {
   const [formData, setFormData] = useState({
@@ -68,6 +69,49 @@ const FlatLeaseForm = ({ formType }) => {
     witness2Details: "",
   });
 
+  const demoData = {
+    agreementDay: "10",
+    agreementMonth: "July",
+    agreementYear: "2024",
+    agreementPlace: "Pune",
+    ownerName: "Sunil Deshpande",
+    ownerAge: "45",
+    ownerOccupation: "Engineer",
+    ownerAddress: "Flat 101, Sunshine Heights, Kothrud, Pune - 411038",
+    ownerPan: "ABCDE1234F",
+    tenantName: "Anjali Rao",
+    tenantAge: "28",
+    tenantOccupation: "Software Developer",
+    tenantAddress: "Row House 4, Green Valley, Baner, Pune - 411045",
+    tenantPan: "FGHIJ5678K",
+    flatNo: "202",
+    societyName: "Royal Residency",
+    ctsNo: "1234/56",
+    city: "Pune",
+    flatAdd: "Survey No 45, Hissa No 2, Wakad, Pune",
+    leaseDuration: "1",
+    startDate: "2024-08-01",
+    endDate: "2025-07-31",
+    rentAmount: "25000",
+    rentWords: "Twenty Five Thousand Only",
+    areaSqMtrs: "85",
+    district: "Pune",
+    subDivision: "Haveli",
+    taluka: "Haveli",
+    corporationLimits: "PMC",
+    plotNo: "12",
+    surveyNo: "45",
+    boundaryEast: "Internal Road",
+    boundaryWest: "Plot 11",
+    boundaryNorth: "Open Space",
+    boundarySouth: "Plot 13",
+    furnitureDescription: "Sofa set, Dining table, 2 Double beds, Modular kitchen",
+    witness1Name: "Vikram Shah",
+    witness1Details: "C-901, Blue Heaven, Pune",
+    witness2Name: "Sneha Patil",
+    witness2Details: "D-402, Lotus Pond, Pune",
+  };
+
   const handleChange = (field) => (e) => {
     setFormData({ ...formData, [field]: e.target.value });
   };
@@ -90,6 +134,11 @@ const FlatLeaseForm = ({ formType }) => {
   return (
     <form className="lease-form" onSubmit={handlePreview}>
       <h1 className="form-header">Flat Lease Agreement </h1>
+
+      <AutoFillButton 
+        onFill={(data) => setFormData(data)} 
+        demoData={demoData} 
+      />
 
       {/* Agreement Details */}
       <SectionWrapper title="Agreement Details">
