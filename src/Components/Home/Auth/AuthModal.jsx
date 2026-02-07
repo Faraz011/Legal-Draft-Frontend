@@ -79,7 +79,14 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }) => {
     
     try {
       const endpoint = mode === 'login' ? 'login' : 'signup';
-      const url = `${process.env.REACT_APP_API_URL || 'http://localhost:4000'}/api/auth/${endpoint}`;
+      
+      const getApiBaseUrl = () => {
+        const envUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+        const normalizedUrl = envUrl.replace(/\/$/, '');
+        return normalizedUrl.endsWith('/api') ? normalizedUrl : `${normalizedUrl}/api`;
+      };
+
+      const url = `${getApiBaseUrl()}/auth/${endpoint}`;
       
       const payload = { ...formData };
       if (mode === 'login') {

@@ -1,5 +1,13 @@
 import axios from "axios";
-const API_BASE_URL = `${process.env.REACT_APP_API_URL || 'http://localhost:4000'}/api`;
+const getApiBaseUrl = () => {
+  const envUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+  // Remove trailing slash if present
+  const normalizedUrl = envUrl.replace(/\/$/, '');
+  // Append /api only if it doesn't already end with it
+  return normalizedUrl.endsWith('/api') ? normalizedUrl : `${normalizedUrl}/api`;
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 /** Save form */
 export const saveForm = async (formType, formData) => {

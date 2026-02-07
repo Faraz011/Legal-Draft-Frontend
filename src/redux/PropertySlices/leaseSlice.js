@@ -17,9 +17,19 @@ export const submitLease = createAsyncThunk(
   "leases/submitLease",
   async ({ formType, formData, format = "pdf" }, { rejectWithValue }) => {
     try {
-      await saveForm(formType, formData);
-      const res = await generateDocument(formType, formData, format);
-      downloadFile(res, `${formType}-document.${format}`, format);
+      try {
+        await saveForm(formType, formData);
+      } catch (saveErr) {
+        throw new Error(`Failed to save form data: ${saveErr.message || saveErr}`);
+      }
+
+      try {
+        const res = await generateDocument(formType, formData, format);
+        downloadFile(res, `${formType}-document.${format}`, format);
+      } catch (genErr) {
+        throw new Error(`Failed to generate document: ${genErr.message || genErr}`);
+      }
+
       return { formType, formData };
     } catch (err) {
       const payload =
