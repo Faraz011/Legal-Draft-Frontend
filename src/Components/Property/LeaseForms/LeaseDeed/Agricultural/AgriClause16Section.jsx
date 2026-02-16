@@ -1,6 +1,5 @@
 import React, { useCallback } from "react";
-import { info, Info } from "lucide-react";
-import SelectField from "../../../../FormComponents/SelectField";
+import { Info } from "lucide-react";
 import NumberField from "../../../../FormComponents/NumberField";
 import TextAreaField from "../../../../FormComponents/TextAreaField";
 

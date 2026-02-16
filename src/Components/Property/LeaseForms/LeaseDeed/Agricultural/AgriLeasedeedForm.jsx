@@ -3,21 +3,14 @@ import { motion } from "framer-motion";
 import {
   FileText,
   Users,
-  Calendar,
   DollarSign,
   MapPin,
-  ClipboardList,
   Eye,
-  Shield,
-  Lock,
-  Wrench,
   Scale,
   AlertCircle,
-  Copy,
   Wheat,
   Droplets,
   Sprout,
-  Hammer,
   User,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";

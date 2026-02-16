@@ -1,5 +1,4 @@
 import React, { useCallback } from "react";
-import { motion } from "framer-motion";
 import { Info } from "lucide-react";
 import SelectField from "../../../../FormComponents/SelectField";
 import NumberField from "../../../../FormComponents/NumberField";
