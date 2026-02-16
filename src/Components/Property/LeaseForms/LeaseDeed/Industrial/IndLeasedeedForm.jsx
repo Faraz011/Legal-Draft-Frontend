@@ -32,7 +32,9 @@ import {
   selectFormData,
   updateField,
   initializeForm,
+  updateFormBulk,
 } from "../../../../../redux/PropertySlices/leaseSlice";
+import AutoFillButton from "../../../../FormComponents/AutoFillButton";
 
 // Default form data - 37 fields total
 const defaultFormData = {
@@ -125,11 +127,65 @@ const defaultFormData = {
   witness2Address: "",
 };
 
+const demoData = {
+  agreementPlace: "Ahmedabad",
+  agreementDate: "2024-08-01",
+  lessorName: "Gujarat Industrial Developers",
+  lessorFatherName: "Auth. Signatory Mr. Patel",
+  lessorResidentAddress: "GIDC House, Gandhinagar, Gujarat",
+  lessorAadharNo: "1111-2222-3333",
+  lessorPanCardNo: "GIDCG1234H",
+  lesseeName: "Apex Manufacturing Solutions PVT LTD",
+  lesseeFatherName: "Auth. Signatory Mr. Sharma",
+  lesseeResidentAddress: "Plot 45, GIDC Industrial Estate, Ahmedabad",
+  lesseeAadharNo: "4444-5555-6666",
+  lesseePanCardNo: "APEXM5678L",
+  propertySituatedAt: "Ahmedabad Industrial Park",
+  propertyMunicipalNo: "L-902",
+  industrialPurpose: "Metal Fabrication and Assembly",
+  machineryEquipmentDescription:
+    "CNC Machines, Hydraulic Presses, Welding Stations",
+  rentAmount: "150000",
+  rentPaymentMode: "bank_transfer",
+  latePaymentInterestRate: "2.5",
+  defaultRemedyDays: "30",
+  annualRentIncreasePercent: "5",
+  rentIncreaseNoticeDays: "90",
+  leaseStartDate: "2024-09-01",
+  leaseEndDate: "2034-08-31",
+  securityDepositAmount: "450000",
+  lockInDurationYears: "2",
+  lockInStartDate: "2024-09-01",
+  powerSupplyCapacity: "500 KVA",
+  waterConsumptionLimit: "5000 Liters/Day",
+  wasteManagementResponsibility: "Lessee",
+  inspectionNoticeHours: "48",
+  fireAffiliateCompliance: "Certified by State Fire Dept",
+  laborLawsCompliance: "In accordance with Factories Act",
+  environmentalCompliance: "GPCB Category B",
+  pollutionControlApproval: "Obtained via CTO",
+  governingLawState: "Gujarat",
+  courtJurisdiction: "Ahmedabad",
+  buildingNo: "Block C",
+  propertyAreaSqMtrs: "5000",
+  registrationDistrict: "Ahmedabad",
+  subDivisionTaluka: "Sanand",
+  corporationLimits: "AMC",
+  plotNo: "112",
+  surveyNo: "445/P",
+  boundaryEast: "Internal Road",
+  boundarySouth: "Vacant Plot 113",
+  boundaryWest: "Common Facility Center",
+  boundaryNorth: "Plot 111",
+  witness1Name: "Manoj Kumar",
+  witness1Address: "Shanti Nagar, Ahmedabad",
+  witness2Name: "Deepak Vohra",
+  witness2Address: "Vasant Kunj, Ahmedabad",
+};
 
 const IndustrialLeaseDeedForm = () => {
   const dispatch = useDispatch();
   const formType = "industrial_deed";
-
 
   useEffect(() => {
     dispatch(initializeForm({ formType, initialData: defaultFormData }));
@@ -149,6 +205,10 @@ const IndustrialLeaseDeedForm = () => {
   const handlePreview = (e) => {
     e.preventDefault();
     setPreviewMode(true);
+  };
+
+  const handleFill = (data) => {
+    dispatch(updateFormBulk({ formType, data }));
   };
 
   if (previewMode) {
@@ -231,15 +291,22 @@ const IndustrialLeaseDeedForm = () => {
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 border border-slate-800 rounded-full mb-6">
             <Factory className="w-4 h-4 text-orange-400" />
-            <span className="text-slate-400 text-sm">Industrial Property Lease</span>
+            <span className="text-slate-400 text-sm">
+              Industrial Property Lease
+            </span>
           </div>
 
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
             Industrial Lease Deed
           </h1>
           <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-            Complete all sections to generate a legally compliant industrial lease agreement
+            Complete all sections to generate a legally compliant industrial
+            lease agreement
           </p>
+
+          <div className="flex justify-center mt-6">
+            <AutoFillButton onFill={handleFill} demoData={demoData} />
+          </div>
 
           {/* Progress Indicator */}
           <div className="mt-8 flex items-center justify-center gap-2 flex-wrap">
@@ -266,7 +333,9 @@ const IndustrialLeaseDeedForm = () => {
               <div className="p-3 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 bg-opacity-10">
                 <FileText className="w-6 h-6 text-blue-400" />
               </div>
-              <h2 className="text-2xl font-bold text-white">Agreement Details</h2>
+              <h2 className="text-2xl font-bold text-white">
+                Agreement Details
+              </h2>
             </div>
 
             <div className="space-y-4">
@@ -295,7 +364,9 @@ const IndustrialLeaseDeedForm = () => {
               <div className="p-3 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-500 bg-opacity-10">
                 <Users className="w-6 h-6 text-purple-400" />
               </div>
-              <h2 className="text-2xl font-bold text-white">Party Information</h2>
+              <h2 className="text-2xl font-bold text-white">
+                Party Information
+              </h2>
             </div>
 
             {/* Lessor */}
@@ -361,7 +432,9 @@ const IndustrialLeaseDeedForm = () => {
                 <div className="w-full border-t border-slate-800"></div>
               </div>
               <div className="relative flex justify-center">
-                <span className="px-4 text-sm text-slate-500 bg-slate-900">And</span>
+                <span className="px-4 text-sm text-slate-500 bg-slate-900">
+                  And
+                </span>
               </div>
             </div>
 
@@ -429,7 +502,9 @@ const IndustrialLeaseDeedForm = () => {
               <div className="p-3 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 bg-opacity-10">
                 <Building2 className="w-6 h-6 text-green-400" />
               </div>
-              <h2 className="text-2xl font-bold text-white">Property Details</h2>
+              <h2 className="text-2xl font-bold text-white">
+                Property Details
+              </h2>
             </div>
 
             <div className="space-y-4">
@@ -458,7 +533,9 @@ const IndustrialLeaseDeedForm = () => {
               <div className="p-3 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 bg-opacity-10">
                 <Factory className="w-6 h-6 text-amber-400" />
               </div>
-              <h2 className="text-2xl font-bold text-white">Industrial Operations</h2>
+              <h2 className="text-2xl font-bold text-white">
+                Industrial Operations
+              </h2>
             </div>
 
             <div className="space-y-4">
@@ -489,7 +566,9 @@ const IndustrialLeaseDeedForm = () => {
               <div className="p-3 rounded-xl bg-gradient-to-br from-pink-500 to-rose-500 bg-opacity-10">
                 <DollarSign className="w-6 h-6 text-pink-400" />
               </div>
-              <h2 className="text-2xl font-bold text-white">Rent & Payment Terms</h2>
+              <h2 className="text-2xl font-bold text-white">
+                Rent & Payment Terms
+              </h2>
             </div>
 
             <div className="space-y-4">
@@ -536,7 +615,9 @@ const IndustrialLeaseDeedForm = () => {
               />
 
               <div className="p-4 bg-slate-800 rounded-lg border border-slate-700">
-                <h4 className="text-white font-semibold mb-3">Annual Rent Revision</h4>
+                <h4 className="text-white font-semibold mb-3">
+                  Annual Rent Revision
+                </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <NumberField
                     label="Annual Increase Percentage (%)"
@@ -598,7 +679,9 @@ const IndustrialLeaseDeedForm = () => {
               <div className="p-3 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-500 bg-opacity-10">
                 <Shield className="w-6 h-6 text-teal-400" />
               </div>
-              <h2 className="text-2xl font-bold text-white">Security Deposit</h2>
+              <h2 className="text-2xl font-bold text-white">
+                Security Deposit
+              </h2>
             </div>
 
             <div className="space-y-4">
@@ -653,7 +736,9 @@ const IndustrialLeaseDeedForm = () => {
               <div className="p-3 rounded-xl bg-gradient-to-br from-yellow-500 to-amber-500 bg-opacity-10">
                 <Zap className="w-6 h-6 text-yellow-400" />
               </div>
-              <h2 className="text-2xl font-bold text-white">Infrastructure & Utilities</h2>
+              <h2 className="text-2xl font-bold text-white">
+                Infrastructure & Utilities
+              </h2>
             </div>
 
             <div className="space-y-4">
@@ -698,7 +783,9 @@ const IndustrialLeaseDeedForm = () => {
               <div className="p-3 rounded-xl bg-gradient-to-br from-red-500 to-pink-500 bg-opacity-10">
                 <CheckCircle2 className="w-6 h-6 text-red-400" />
               </div>
-              <h2 className="text-2xl font-bold text-white">Compliance & Safety</h2>
+              <h2 className="text-2xl font-bold text-white">
+                Compliance & Safety
+              </h2>
             </div>
 
             <div className="space-y-4">
@@ -751,7 +838,9 @@ const IndustrialLeaseDeedForm = () => {
               <div className="p-3 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-500 bg-opacity-10">
                 <Scale className="w-6 h-6 text-indigo-400" />
               </div>
-              <h2 className="text-2xl font-bold text-white">Legal Terms & Jurisdiction</h2>
+              <h2 className="text-2xl font-bold text-white">
+                Legal Terms & Jurisdiction
+              </h2>
             </div>
 
             <div className="space-y-4">
@@ -817,7 +906,9 @@ const IndustrialLeaseDeedForm = () => {
               <div className="p-3 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-500 bg-opacity-10">
                 <Copy className="w-6 h-6 text-cyan-400" />
               </div>
-              <h2 className="text-2xl font-bold text-white">Counterparts & Execution</h2>
+              <h2 className="text-2xl font-bold text-white">
+                Counterparts & Execution
+              </h2>
             </div>
 
             <div className="space-y-4">
@@ -901,7 +992,9 @@ const IndustrialLeaseDeedForm = () => {
 
               {/* Boundaries */}
               <div className="mt-6">
-                <h3 className="text-white font-semibold mb-4">Property Boundaries</h3>
+                <h3 className="text-white font-semibold mb-4">
+                  Property Boundaries
+                </h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <TextInputField
                     label="East"
@@ -1015,7 +1108,8 @@ const IndustrialLeaseDeedForm = () => {
           </motion.button>
 
           <p className="text-center text-sm text-slate-500 mt-4">
-            All information will be validated before generating the final lease agreement
+            All information will be validated before generating the final lease
+            agreement
           </p>
         </motion.form>
       </div>

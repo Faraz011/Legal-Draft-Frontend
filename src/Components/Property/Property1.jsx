@@ -1,52 +1,20 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, FileText, Building2, Home, Factory, MapPin } from "lucide-react";
-import RentalLease from "./LeaseForms/RentalLease";
-import FlatLease from "./LeaseForms/FlatLease";
-import CommercialLeaseForm from "./LeaseForms/CommercialLeaseForm";
-import LandLease from "./LeaseForms/LandLease";
+import { ArrowRight, FileText, Factory, Wheat } from "lucide-react";
 import LeasedeedCommercialForm from "./LeaseForms/LeaseDeed/Commercial/LeasedeedForm";
 import LeasedeedIndustrialForm from "./LeaseForms/LeaseDeed/Industrial/IndLeasedeedForm";
+import AgriLeasedeedForm from "./LeaseForms/LeaseDeed/Agricultural/AgriLeasedeedForm";
 
 export const leases = [
   {
-    title: "Residential Lease",
-    desc: "Perfect for houses and apartments. Includes tenant rights, maintenance terms, and security deposit clauses.",
-    gradient: "from-blue-500 to-cyan-500",
-    type: "residential",
-    img: require("../../Images/Property/RentalAgreement.png"),
-    component: RentalLease,
-    icon: Home,
-    popular: true,
-  },
-  {
-    title: "Flat Lease",
-    desc: "Specialized agreement for multi-unit residential flats with common area provisions.",
-    gradient: "from-blue-500 to-cyan-500",
-    type: "flat",
-    img: require("../../Images/Property/FlatAgreement.png"),
-    component: FlatLease,
-    icon: Building2,
-  },
-  {
-    title: "Commercial Lease",
-    desc: "Comprehensive agreement for office spaces, retail stores, and commercial properties.",
-    gradient: "from-green-500 to-emerald-500",
-    type: "commercial",
-    img: require("../../Images/Property/CommercialAgreement.png"),
-    component: CommercialLeaseForm,
-    icon: Building2,
-    popular: true,
-  },
-  {
-    title: "Land Lease",
-    desc: "Agreements for vacant land, plots, and agricultural leasing purposes.",
-    gradient: "from-purple-500 to-indigo-500",
-    type: "land",
+    title: "Agricultural Lease Deed",
+    desc: "Comprehensive agreement for leasing agricultural land for cultivation and farming purposes.",
+    gradient: "from-emerald-500 to-green-600",
+    type: "agricultural",
     img: require("../../Images/Property/LandAgreement.png"),
-    component: LandLease,
-    icon: MapPin,
+    component: AgriLeasedeedForm,
+    icon: Wheat,
   },
   {
     title: "Industrial Lease Deed",
@@ -66,8 +34,7 @@ export const leases = [
     component: LeasedeedCommercialForm,
     icon: FileText,
     popular: true,
-    },
-   
+  },
 ];
 
 const Property = () => {
@@ -86,7 +53,7 @@ const Property = () => {
             <FileText className="w-4 h-4 text-cyan-400" />
             <span className="text-slate-400 text-sm">Legal Documents</span>
           </motion.div>
-          
+
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -95,15 +62,16 @@ const Property = () => {
           >
             Property Lease Agreements
           </motion.h1>
-          
+
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             className="text-slate-400 text-lg max-w-3xl mx-auto leading-relaxed"
           >
-            Create legally binding lease agreements in minutes. Choose from our professionally 
-            drafted templates tailored for different property types.
+            Create legally binding lease agreements in minutes. Choose from our
+            professionally drafted templates tailored for different property
+            types.
           </motion.p>
         </div>
 
@@ -120,8 +88,13 @@ const Property = () => {
             { label: "States Covered", value: "All" },
             { label: "Legally Verified", value: "100%" },
           ].map((stat, idx) => (
-            <div key={idx} className="text-center p-4 bg-slate-900/50 border border-slate-800 rounded-lg">
-              <div className="text-2xl md:text-3xl font-bold text-white mb-1">{stat.value}</div>
+            <div
+              key={idx}
+              className="text-center p-4 bg-slate-900/50 border border-slate-800 rounded-lg"
+            >
+              <div className="text-2xl md:text-3xl font-bold text-white mb-1">
+                {stat.value}
+              </div>
               <div className="text-slate-400 text-sm">{stat.label}</div>
             </div>
           ))}
@@ -165,14 +138,18 @@ const Property = () => {
                     {/* Popular Badge */}
                     {lease.popular && (
                       <div className="absolute top-4 right-4 z-20">
-                        <span className={`px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r ${lease.gradient} text-white`}>
+                        <span
+                          className={`px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r ${lease.gradient} text-white`}
+                        >
                           Popular
                         </span>
                       </div>
                     )}
 
                     {/* Gradient Overlay */}
-                    <div className={`absolute inset-0 bg-gradient-to-br ${lease.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
+                    <div
+                      className={`absolute inset-0 bg-gradient-to-br ${lease.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}
+                    />
 
                     {/* Image Section with Icon Overlay */}
                     <div className="relative h-48 bg-slate-800 overflow-hidden">
@@ -184,7 +161,9 @@ const Property = () => {
                         />
                       )}
                       {/* Icon Overlay */}
-                      <div className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br ${lease.gradient} opacity-0 group-hover:opacity-90 transition-all duration-300`}>
+                      <div
+                        className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br ${lease.gradient} opacity-0 group-hover:opacity-90 transition-all duration-300`}
+                      >
                         <Icon className="w-16 h-16 text-white" />
                       </div>
                     </div>
@@ -192,8 +171,17 @@ const Property = () => {
                     {/* Content Section */}
                     <div className="relative p-6">
                       <div className="flex items-start justify-between mb-3">
-                        <div className={`p-2 rounded-lg bg-gradient-to-br ${lease.gradient} bg-opacity-10`}>
-                          <Icon className={`w-6 h-6 bg-gradient-to-r ${lease.gradient} bg-clip-text text-transparent`} style={{ WebkitTextFillColor: 'transparent', WebkitBackgroundClip: 'text', backgroundClip: 'text' }} />
+                        <div
+                          className={`p-2 rounded-lg bg-gradient-to-br ${lease.gradient} bg-opacity-10`}
+                        >
+                          <Icon
+                            className={`w-6 h-6 bg-gradient-to-r ${lease.gradient} bg-clip-text text-transparent`}
+                            style={{
+                              WebkitTextFillColor: "transparent",
+                              WebkitBackgroundClip: "text",
+                              backgroundClip: "text",
+                            }}
+                          />
                         </div>
                       </div>
 
@@ -213,7 +201,9 @@ const Property = () => {
                     </div>
 
                     {/* Bottom Accent Line */}
-                    <div className={`h-1 bg-gradient-to-r ${lease.gradient} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left`} />
+                    <div
+                      className={`h-1 bg-gradient-to-r ${lease.gradient} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left`}
+                    />
                   </div>
                 </Link>
               </motion.div>
@@ -228,9 +218,12 @@ const Property = () => {
           transition={{ delay: 0.6 }}
           className="mt-16 text-center p-8 bg-slate-900 border border-slate-800 rounded-2xl"
         >
-          <h3 className="text-2xl font-bold text-white mb-3">Need Custom Agreement?</h3>
+          <h3 className="text-2xl font-bold text-white mb-3">
+            Need Custom Agreement?
+          </h3>
           <p className="text-slate-400 mb-6 max-w-2xl mx-auto">
-            Can't find what you're looking for? Our legal experts can help you create a custom lease agreement tailored to your specific needs.
+            Can't find what you're looking for? Our legal experts can help you
+            create a custom lease agreement tailored to your specific needs.
           </p>
           <button className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-medium rounded-lg hover:shadow-lg hover:shadow-cyan-500/50 transition-all">
             Contact Legal Team

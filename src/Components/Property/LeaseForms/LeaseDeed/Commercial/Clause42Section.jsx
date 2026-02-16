@@ -165,7 +165,7 @@ const DynamicDefaultClauseSection = ({ formType, formData, handleChange }) => {
         </h3>
 
         <NumberField
-          label="Default After Consecutive Months"
+          label="Default After No Payment Of Consecutive Months"
           name="defaultConsecutiveMonths"
           value={formData.defaultConsecutiveMonths}
           onChange={handleChange("defaultConsecutiveMonths")}
